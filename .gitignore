@@ -1,0 +1,32 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node & Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Database & Sandbox
+*.db
+*.sqlite3
+sandbox/temp_workspaces/
+
+# Environment & Secrets
+.env
+!.env.example
+*.pem
+*.key
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
