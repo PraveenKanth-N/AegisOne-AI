@@ -2,7 +2,7 @@
 # Launches Backend (8000), Vulnerable Lab (8001), and Frontend (5173)
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "  AegisOne AI — Starting Command Center & Services" -ForegroundColor Cyan
+Write-Host "  AegisOne AI -- Starting Command Center and Services" -ForegroundColor Cyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
 $root = "D:\AegisOne-AI"
