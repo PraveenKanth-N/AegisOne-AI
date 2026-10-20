@@ -38,12 +38,12 @@ async def _execute_sandbox_validation(validation_run_id: str, is_bad_fix_demo: b
         await db.commit()
 
         # Stage 1: Syntax / Compilation Check
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(0.05)
         vrun.syntax_check = "PASS"
         await db.commit()
 
         # Stage 2: Functional Regression Tests
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.05)
         if is_bad_fix_demo:
             # Bad fix breaks functional test
             vrun.regression_tests = "FAIL"
@@ -71,12 +71,12 @@ async def _execute_sandbox_validation(validation_run_id: str, is_bad_fix_demo: b
         await db.commit()
 
         # Stage 3: AST Verification (ensure AST tree is safe)
-        await asyncio.sleep(0.4)
+        await asyncio.sleep(0.05)
         vrun.ast_verification = "PASS"
         await db.commit()
 
         # Stage 4: Secondary Security Re-Scan
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.05)
         vrun.security_rescan = "PASS"
         vrun.status = "PASSED"
         vrun.test_output = "All 18 unit and regression tests passed. AST verification confirms parameterization. 0 new security flaws detected."
@@ -127,8 +127,10 @@ async def validate_remediation(
         f"Remediation {remediation_id} dispatched to isolated sandbox {sandbox_id} (Bad AI Demonstration mode: {simulate_bad_fix})",
         resource_id=vrun.id, resource_type="ValidationRun"
     )
+    await db.commit()
     
-    background_tasks.add_task(_execute_sandbox_validation, vrun.id, simulate_bad_fix)
+    # Dispatch sandbox validation asynchronously on the event loop
+    asyncio.create_task(_execute_sandbox_validation(vrun.id, simulate_bad_fix))
     return vrun
 
 @router.get("/run/{run_id}", response_model=ValidationRunResponse)

@@ -64,7 +64,7 @@ DEMO_FINDINGS_DATA = [
     },
 ]
 
-async def _run_scan_pipeline(scan_id: str, project: Project, db_session):
+async def _run_scan_pipeline(scan_id: str, project_id: str, db_session):
     """Background task: executes the full security decision pipeline."""
     async with db_session() as db:
         try:
@@ -76,9 +76,9 @@ async def _run_scan_pipeline(scan_id: str, project: Project, db_session):
 
             # Fetch first asset for context
             asset_result = await db.execute(
-                select(Asset).where(Asset.project_id == project.id)
+                select(Asset).where(Asset.project_id == project_id)
             )
-            asset = asset_result.scalar_one_or_none()
+            asset = asset_result.scalars().first()
 
             stages = [
                 ("DETECT", "Crawler and fuzzer discovering endpoints", 10),
@@ -98,7 +98,7 @@ async def _run_scan_pipeline(scan_id: str, project: Project, db_session):
                 scan.progress_percent = progress
                 scan.summary = summary
                 await db.commit()
-                await asyncio.sleep(0.3)  # Realistic pipeline simulation
+                await asyncio.sleep(0.05)  # Fast responsive pipeline simulation
 
             # Create findings
             for fdata in DEMO_FINDINGS_DATA:
@@ -145,17 +145,18 @@ async def _run_scan_pipeline(scan_id: str, project: Project, db_session):
             scan.completed_at = datetime.now(timezone.utc)
 
             await log_event(db, "SCAN_COMPLETED", f"Security scan {scan_id} completed with {len(DEMO_FINDINGS_DATA)} findings",
-                           project_id=project.id, resource_id=scan_id, resource_type="Scan")
+                           project_id=project_id, resource_id=scan_id, resource_type="Scan")
             await db.commit()
 
         except Exception as e:
-            async with db_session() as err_db:
-                result = await err_db.execute(select(Scan).where(Scan.id == scan_id))
-                scan = result.scalar_one_or_none()
-                if scan:
-                    scan.status = "FAILED"
-                    scan.summary = f"Scan failed: {str(e)}"
-                    await err_db.commit()
+            print(f"[AegisOne AI] Scan error: {e}")
+            await db.rollback()
+            try:
+                scan.status = "FAILED"
+                scan.summary = f"Scan failed: {str(e)}"
+                await db.commit()
+            except Exception:
+                pass
 
 
 @router.post("/project/{project_id}", response_model=ScanResponse, status_code=201)
@@ -189,7 +190,8 @@ async def start_scan(
                    project_id=project_id, resource_id=scan.id, resource_type="Scan")
 
     from backend.app.core.database import AsyncSessionLocal
-    background_tasks.add_task(_run_scan_pipeline, scan.id, project, AsyncSessionLocal)
+    # Dispatch pipeline as an async task on the current event loop
+    asyncio.create_task(_run_scan_pipeline(scan.id, project_id, AsyncSessionLocal))
     return scan
 
 
