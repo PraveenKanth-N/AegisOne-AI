@@ -75,6 +75,12 @@ export interface ValidationRun {
   id: string;
   remediation_id: string;
   sandbox_id?: string;
+  container_id?: string;
+  execution_mode?: string;
+  isolation_level?: string;
+  production_eligible?: boolean;
+  policy_verdict?: string;
+  checks_executed?: string;
   status: string;
   syntax_check: string;
   regression_tests: string;

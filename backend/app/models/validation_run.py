@@ -12,6 +12,14 @@ class ValidationRun(Base):
     sandbox_id = Column(String(36), nullable=True)
     status = Column(String(30), default="PENDING")  # PENDING, RUNNING, PASSED, FAILED, ROLLED_BACK
     
+    # Phase 16 Isolation & Sandbox Metadata
+    execution_mode = Column(String(30), default="IN_PROCESS_SIMULATION")  # DOCKER_CONTAINER, IN_PROCESS_SIMULATION
+    isolation_level = Column(String(30), default="UNISOLATED_HOST")       # CONTAINER_ISOLATED, UNISOLATED_HOST
+    container_id = Column(String(64), nullable=True)                     # Real Docker container ID (None if simulated)
+    production_eligible = Column(Boolean, default=False)                 # True ONLY if genuine container isolation passed
+    policy_verdict = Column(String(50), nullable=True)                   # APPROVED_SANDBOX_ISOLATED, EDUCATIONAL_DEMO_REQUIRES_REVIEW, etc.
+    checks_executed = Column(Text, nullable=True)                        # JSON list of actually executed check types
+    
     # Stage results
     syntax_check = Column(String(20), default="PENDING")       # PENDING, PASS, FAIL
     regression_tests = Column(String(20), default="PENDING")

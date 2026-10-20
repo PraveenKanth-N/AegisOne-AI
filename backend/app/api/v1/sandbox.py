@@ -2,96 +2,44 @@
 AegisOne AI - Sandbox Validation Center API
 Implements isolated sandbox testing, multi-stage verification,
 regression testing, secondary security re-scanning, and automated rollback.
+Supports genuine Docker container isolation with honest in-process fallback.
 """
 import uuid
 import asyncio
-from datetime import datetime, timezone
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
-from backend.app.core.database import get_db, AsyncSessionLocal
-from backend.app.models import Remediation, ValidationRun, Finding
+from backend.app.core.database import get_db
+from backend.app.models import Remediation, ValidationRun
 from backend.app.schemas import ValidationRunResponse
 from backend.app.services.audit_logger import log_event
+from backend.app.services.sandbox_service import (
+    check_docker_available,
+    execute_sandbox_validation_task
+)
 
 router = APIRouter(prefix="/sandbox", tags=["Sandbox Validation"])
 
-async def _execute_sandbox_validation(validation_run_id: str, is_bad_fix_demo: bool = False):
-    """Executes the 4-stage sandbox validation asynchronously."""
-    async with AsyncSessionLocal() as db:
-        result = await db.execute(select(ValidationRun).where(ValidationRun.id == validation_run_id))
-        vrun = result.scalar_one_or_none()
-        if not vrun:
-            return
-        
-        rem_res = await db.execute(select(Remediation).where(Remediation.id == vrun.remediation_id))
-        remediation = rem_res.scalar_one_or_none()
-        if not remediation:
-            return
-            
-        finding_res = await db.execute(select(Finding).where(Finding.id == remediation.finding_id))
-        finding = finding_res.scalar_one_or_none()
 
-        vrun.status = "RUNNING"
-        await db.commit()
+@router.get("/docker-status")
+async def get_docker_status():
+    """Returns the live availability of Docker container daemon and isolation support."""
+    available, reason = await check_docker_available()
+    return {
+        "docker_available": available,
+        "isolation_supported": "CONTAINER_ISOLATED" if available else "IN_PROCESS_SIMULATION",
+        "detail": reason,
+        "base_image": "python:3.12-slim" if available else "local_python_runtime",
+        "security_policy": {
+            "network": "DISABLED (--network none)" if available else "HOST_SHARED",
+            "non_root": True if available else False,
+            "memory_limit": "256m" if available else "UNCONSTRAINED",
+            "production_eligible_on_pass": True if available else False
+        }
+    }
 
-        # Stage 1: Syntax / Compilation Check
-        await asyncio.sleep(0.05)
-        vrun.syntax_check = "PASS"
-        await db.commit()
-
-        # Stage 2: Functional Regression Tests
-        await asyncio.sleep(0.05)
-        if is_bad_fix_demo:
-            # Bad fix breaks functional test
-            vrun.regression_tests = "FAIL"
-            vrun.ast_verification = "FAIL"
-            vrun.security_rescan = "FAIL"
-            vrun.status = "FAILED"
-            vrun.failure_reason = "CRITICAL FAILURE: Proposed patch broke authentication contract and introduced an unauthenticated data leakage vulnerability in student profile lookup."
-            vrun.new_vulnerabilities = '["CWE-200: Exposure of Sensitive Information to an Unauthorized Actor", "Functional Regression: Test test_auth_login FAILED with AssertionError"]'
-            vrun.rollback_executed = True
-            vrun.completed_at = datetime.now(timezone.utc)
-            
-            remediation.status = "REJECTED"
-            if finding:
-                finding.status = "OPEN"
-                
-            await log_event(
-                db, "REMEDIATION_REJECTED",
-                f"Validation failed for remediation {remediation.id}. Secondary vulnerability detected: CWE-200. Automated rollback executed.",
-                severity="CRITICAL", resource_id=remediation.id, resource_type="Remediation"
-            )
-            await db.commit()
-            return
-
-        vrun.regression_tests = "PASS"
-        await db.commit()
-
-        # Stage 3: AST Verification (ensure AST tree is safe)
-        await asyncio.sleep(0.05)
-        vrun.ast_verification = "PASS"
-        await db.commit()
-
-        # Stage 4: Secondary Security Re-Scan
-        await asyncio.sleep(0.05)
-        vrun.security_rescan = "PASS"
-        vrun.status = "PASSED"
-        vrun.test_output = "All 18 unit and regression tests passed. AST verification confirms parameterization. 0 new security flaws detected."
-        vrun.completed_at = datetime.now(timezone.utc)
-        
-        remediation.status = "VALIDATED"
-        if finding:
-            finding.status = "VALIDATED"
-            
-        await log_event(
-            db, "REMEDIATION_VALIDATED",
-            f"Remediation {remediation.id} passed all 4 sandbox verification stages. Safe to merge into production branch.",
-            severity="INFO", resource_id=remediation.id, resource_type="Remediation"
-        )
-        await db.commit()
 
 @router.post("/validate/{remediation_id}", response_model=ValidationRunResponse, status_code=201)
 async def validate_remediation(
@@ -106,10 +54,24 @@ async def validate_remediation(
     if not rem:
         raise HTTPException(404, "Remediation not found")
     
-    sandbox_id = f"box-{uuid.uuid4().hex[:8]}"
+    docker_available, docker_reason = await check_docker_available()
+    
+    if docker_available:
+        sandbox_ref = f"box-{uuid.uuid4().hex[:8]}"
+        exec_mode = "DOCKER_CONTAINER"
+        iso_level = "CONTAINER_ISOLATED"
+    else:
+        sandbox_ref = f"sim-inproc-{uuid.uuid4().hex[:8]}"
+        exec_mode = "IN_PROCESS_SIMULATION"
+        iso_level = "UNISOLATED_HOST"
+
     vrun = ValidationRun(
         remediation_id=remediation_id,
-        sandbox_id=sandbox_id,
+        sandbox_id=sandbox_ref,
+        execution_mode=exec_mode,
+        isolation_level=iso_level,
+        container_id=None,
+        production_eligible=False,
         status="RUNNING",
         syntax_check="PENDING",
         regression_tests="PENDING",
@@ -124,14 +86,15 @@ async def validate_remediation(
     
     await log_event(
         db, "SANDBOX_VALIDATION_DISPATCHED",
-        f"Remediation {remediation_id} dispatched to isolated sandbox {sandbox_id} (Bad AI Demonstration mode: {simulate_bad_fix})",
+        f"Remediation {remediation_id} dispatched ({exec_mode}, {iso_level}, Bad AI Demo: {simulate_bad_fix})",
         resource_id=vrun.id, resource_type="ValidationRun"
     )
     await db.commit()
     
     # Dispatch sandbox validation asynchronously on the event loop
-    asyncio.create_task(_execute_sandbox_validation(vrun.id, simulate_bad_fix))
+    asyncio.create_task(execute_sandbox_validation_task(vrun.id, simulate_bad_fix))
     return vrun
+
 
 @router.get("/run/{run_id}", response_model=ValidationRunResponse)
 async def get_validation_run(run_id: str, db: AsyncSession = Depends(get_db)):
@@ -140,6 +103,7 @@ async def get_validation_run(run_id: str, db: AsyncSession = Depends(get_db)):
     if not vrun:
         raise HTTPException(404, "Validation run not found")
     return vrun
+
 
 @router.get("/remediation/{remediation_id}", response_model=List[ValidationRunResponse])
 async def get_remediation_runs(remediation_id: str, db: AsyncSession = Depends(get_db)):

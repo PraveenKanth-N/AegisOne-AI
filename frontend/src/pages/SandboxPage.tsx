@@ -130,7 +130,7 @@ export const SandboxPage: React.FC = () => {
                 )}
               </div>
               <div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                   <span className="text-base font-bold font-mono text-white">
                     SANDBOX: {activeRun.sandbox_id || 'box-isolated-exec'}
                   </span>
@@ -149,10 +149,42 @@ export const SandboxPage: React.FC = () => {
                       ? 'VALIDATED SAFE'
                       : 'VERIFICATION RUNNING'}
                   </span>
+
+                  {/* Phase 16 Isolation & Policy Badges */}
+                  <span
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded font-semibold ${
+                      activeRun.execution_mode === 'DOCKER_CONTAINER'
+                        ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    }`}
+                  >
+                    {activeRun.execution_mode === 'DOCKER_CONTAINER'
+                      ? 'CONTAINER ISOLATED'
+                      : 'SIMULATION FALLBACK (HOST UNISOLATED)'}
+                  </span>
+
+                  <span
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded font-semibold ${
+                      activeRun.production_eligible
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        : 'bg-slate-700/60 text-slate-300 border border-slate-600'
+                    }`}
+                  >
+                    {activeRun.production_eligible
+                      ? 'PROD-ELIGIBLE'
+                      : 'EDUCATIONAL DEMO (MANUAL REVIEW REQUIRED)'}
+                  </span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">
-                  Target: College Placement Portal • Baseline Workspace Cloned
-                </span>
+                <div className="flex items-center space-x-2 mt-1">
+                  <span className="text-xs text-slate-400 font-mono">
+                    Target: College Placement Portal • Mode: {activeRun.execution_mode || 'IN_PROCESS_SIMULATION'}
+                  </span>
+                  {activeRun.policy_verdict && (
+                    <span className="text-[11px] text-slate-300 font-mono">
+                      • Policy: <span className="text-sky-300">{activeRun.policy_verdict}</span>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 

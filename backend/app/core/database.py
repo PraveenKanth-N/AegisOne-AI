@@ -35,6 +35,23 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         finally:
             await session.close()
 
+from sqlalchemy import text
+
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        
+        # Safe migration for validation_runs Phase 16 isolation columns
+        new_cols = [
+            ("execution_mode", "VARCHAR(30) DEFAULT 'IN_PROCESS_SIMULATION'"),
+            ("isolation_level", "VARCHAR(30) DEFAULT 'UNISOLATED_HOST'"),
+            ("container_id", "VARCHAR(64)"),
+            ("production_eligible", "BOOLEAN DEFAULT 0"),
+            ("checks_executed", "TEXT"),
+            ("policy_verdict", "VARCHAR(50)")
+        ]
+        for col_name, col_def in new_cols:
+            try:
+                await conn.execute(text(f"ALTER TABLE validation_runs ADD COLUMN {col_name} {col_def}"))
+            except Exception:
+                pass

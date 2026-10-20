@@ -128,6 +128,13 @@ class RemediationResponse(BaseModel):
 class ValidationRunResponse(BaseModel):
     id: str
     remediation_id: str
+    sandbox_id: Optional[str] = None
+    container_id: Optional[str] = None
+    execution_mode: Optional[str] = "IN_PROCESS_SIMULATION"
+    isolation_level: Optional[str] = "UNISOLATED_HOST"
+    production_eligible: Optional[bool] = False
+    policy_verdict: Optional[str] = None
+    checks_executed: Optional[str] = None
     status: str
     syntax_check: str
     regression_tests: str
@@ -135,6 +142,7 @@ class ValidationRunResponse(BaseModel):
     security_rescan: str
     failure_reason: Optional[str]
     rollback_executed: bool
+    test_output: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime]
     model_config = {"from_attributes": True}
