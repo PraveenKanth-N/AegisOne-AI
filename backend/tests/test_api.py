@@ -25,6 +25,10 @@ async def test_health_endpoint():
 
 @pytest.mark.asyncio
 async def test_dashboard_summary():
+    from backend.app.core.database import init_db
+    from backend.app.seed import seed_database
+    await init_db()
+    await seed_database()
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.get("/api/v1/dashboard/summary")

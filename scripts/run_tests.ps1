@@ -9,6 +9,7 @@ $root = "D:\AegisOne-AI"
 # 1. Backend Pytest
 Write-Host ""
 Write-Host "[1/2] Running Backend Unit, Integration, and Security Tests..." -ForegroundColor Yellow
+$env:PYTHONPATH = $root
 & "$root\venv\Scripts\python.exe" -m pytest "$root\backend\tests" -v
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Backend tests failed!" -ForegroundColor Red

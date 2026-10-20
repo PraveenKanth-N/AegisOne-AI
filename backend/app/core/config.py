@@ -11,8 +11,10 @@ class Settings:
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./aegisone.db")
+    # Database (resolve absolute path for sqlite so tests from any working directory find the same db)
+    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+    DEFAULT_DB_PATH: str = os.path.join(BASE_DIR, "aegisone.db").replace("\\", "/")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", f"sqlite+aiosqlite:///{DEFAULT_DB_PATH}")
     
     # Security & Scope Guard (strictly whitelisted targets)
     ALLOWED_TARGET_HOSTS: List[str] = [
