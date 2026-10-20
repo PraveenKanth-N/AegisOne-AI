@@ -188,6 +188,7 @@ async def start_scan(
 
     await log_event(db, "SCAN_STARTED", f"Security scan initiated against {project.target_url}",
                    project_id=project_id, resource_id=scan.id, resource_type="Scan")
+    await db.commit()
 
     from backend.app.core.database import AsyncSessionLocal
     # Dispatch pipeline as an async task on the current event loop
