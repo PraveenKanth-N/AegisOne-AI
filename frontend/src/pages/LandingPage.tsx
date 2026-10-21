@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'overview' | 'findings' | 'remediation' | 'validation'>('overview');
 
   return (
     <div className="bg-[#0e0e11] text-[#e5e1e6] font-sans antialiased min-h-screen selection:bg-[#ff5357] selection:text-[#5c000b] relative">
@@ -440,23 +441,23 @@ export const LandingPage: React.FC = () => {
 </div>
 
 <div className="flex border-b border-outline-variant/40 bg-surface-container-lowest px-4">
-<button className="px-5 py-3 font-label-code text-label-code text-primary font-bold border-b-2 border-primary flex items-center gap-2" id="tab-overview-btn" >
+<button onClick={() => setActiveTab('overview')} className={`px-5 py-3 font-label-code text-label-code flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'overview' ? 'text-primary font-bold border-primary' : 'text-on-surface-variant font-medium hover:text-on-surface border-transparent'}`} id="tab-overview-btn">
 <span className="material-symbols-outlined text-[16px]">dashboard</span> Overview
-        </button>
-<button className="px-5 py-3 font-label-code text-label-code text-on-surface-variant font-medium hover:text-on-surface border-b-2 border-transparent flex items-center gap-2" id="tab-findings-btn" >
+</button>
+<button onClick={() => setActiveTab('findings')} className={`px-5 py-3 font-label-code text-label-code flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'findings' ? 'text-primary font-bold border-primary' : 'text-on-surface-variant font-medium hover:text-on-surface border-transparent'}`} id="tab-findings-btn">
 <span className="material-symbols-outlined text-[16px]">bug_report</span> Findings (14)
-        </button>
-<button className="px-5 py-3 font-label-code text-label-code text-on-surface-variant font-medium hover:text-on-surface border-b-2 border-transparent flex items-center gap-2" id="tab-remediation-btn" >
+</button>
+<button onClick={() => setActiveTab('remediation')} className={`px-5 py-3 font-label-code text-label-code flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'remediation' ? 'text-primary font-bold border-primary' : 'text-on-surface-variant font-medium hover:text-on-surface border-transparent'}`} id="tab-remediation-btn">
 <span className="material-symbols-outlined text-[16px]">auto_fix_high</span> Remediation (8)
-        </button>
-<button className="px-5 py-3 font-label-code text-label-code text-on-surface-variant font-medium hover:text-on-surface border-b-2 border-transparent flex items-center gap-2" id="tab-validation-btn" >
+</button>
+<button onClick={() => setActiveTab('validation')} className={`px-5 py-3 font-label-code text-label-code flex items-center gap-2 border-b-2 transition-colors ${activeTab === 'validation' ? 'text-primary font-bold border-primary' : 'text-on-surface-variant font-medium hover:text-on-surface border-transparent'}`} id="tab-validation-btn">
 <span className="material-symbols-outlined text-[16px]">verified</span> Validation Logs
-        </button>
+</button>
 </div>
 
 <div className="p-6">
 
-<div className="space-y-6" id="tab-overview">
+<div className={`space-y-6 ${activeTab === "overview" ? "block" : "hidden"}`} id="tab-overview">
 
 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 <div className="bg-surface-container-low p-4 rounded border border-outline-variant/40">
@@ -560,7 +561,7 @@ export const LandingPage: React.FC = () => {
 <span>Scope: <strong className="text-on-surface">auth-edge-cluster</strong></span>
 <span>Impact: <strong className="text-primary">Data Exfiltration</strong></span>
 </div>
-<button className="px-4 py-2 rounded bg-primary-container text-on-primary-container font-headline-sm text-body-sm font-bold flex items-center gap-1.5 hover:bg-inverse-primary transition-all" >
+<button onClick={() => navigate("/console/remediation")} className="px-4 py-2 rounded bg-primary-container text-on-primary-container font-headline-sm text-body-sm font-bold flex items-center gap-1.5 hover:bg-inverse-primary transition-all">
 <span>Inspect Patch Proposal</span>
 <span className="material-symbols-outlined text-[16px]">chevron_right</span>
 </button>
@@ -569,7 +570,7 @@ export const LandingPage: React.FC = () => {
 </div>
 </div>
 
-<div className="hidden space-y-3" id="tab-findings">
+<div className={`space-y-3 ${activeTab === "findings" ? "block" : "hidden"}`} id="tab-findings">
 <div className="p-3 bg-surface-container-low rounded border border-outline-variant/30 flex items-center justify-between">
 <div className="flex items-center gap-3">
 <span className="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
@@ -605,7 +606,7 @@ export const LandingPage: React.FC = () => {
 </div>
 </div>
 
-<div className="hidden space-y-4" id="tab-remediation">
+<div className={`space-y-4 ${activeTab === "remediation" ? "block" : "hidden"}`} id="tab-remediation">
 <div className="flex items-center justify-between bg-surface-container-low p-3 rounded border border-outline-variant/40">
 <span className="font-label-code text-body-sm text-on-surface">Target File: <strong className="text-primary">src/services/userAuth.ts</strong></span>
 <span className="font-label-badge text-label-badge text-secondary">PROPOSED DIFF #08A</span>
@@ -632,7 +633,7 @@ export const LandingPage: React.FC = () => {
 </div>
 </div>
 
-<div className="hidden font-label-code text-label-code bg-surface-container-high p-4 rounded border border-outline-variant/40 space-y-1" id="tab-validation">
+<div className={`font-label-code text-label-code bg-surface-container-high p-4 rounded border border-outline-variant/40 space-y-1 ${activeTab === "validation" ? "block" : "hidden"}`} id="tab-validation">
 <div className="text-outline">[SANDBOX-SPINUP] Container id: #sbx-8812c initialized in 120ms</div>
 <div className="text-on-surface-variant">[TEST-RUN] Executing 18 integration tests in /tests/auth/...</div>
 <div className="text-emerald-400 font-bold">[PASSED] test_sql_injection_probe_rejected ... OK</div>
