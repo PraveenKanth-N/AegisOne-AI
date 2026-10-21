@@ -38,13 +38,18 @@ export interface Finding {
   asset_id?: string;
   title: string;
   description: string;
-  technical_severity: number;
-  contextual_risk_score: number;
-  risk_level: string;
+  technical_severity?: number;
+  contextual_risk_score?: number;
+  risk_level?: string;
+  severity?: string;
   cwe_id?: string;
   owasp_category?: string;
   affected_endpoint?: string;
   affected_parameter?: string;
+  file_path?: string;
+  line_number?: number;
+  is_remediated?: boolean;
+  cvss_score?: number;
   status: string;
   created_at: string;
 }
@@ -98,22 +103,48 @@ export interface DashboardSummary {
   total_projects: number;
   total_scans: number;
   total_findings: number;
-  critical_count: number;
-  high_count: number;
-  medium_count: number;
-  low_count: number;
-  validated_fixes: number;
-  rejected_fixes: number;
-  security_score: number;
-  last_scan_at?: string;
+  critical_findings?: number;
+  critical_count?: number;
+  high_findings?: number;
+  high_count?: number;
+  remediated_findings?: number;
+  validated_fixes?: number;
+  rejected_fixes?: number;
+  avg_risk_score?: number;
+  security_score?: number;
+  [key: string]: any;
 }
 
 export interface AuditLog {
   id: string;
-  event_type: string;
-  actor: string;
-  project_id?: string;
-  description: string;
-  severity: string;
+  action?: string;
+  event_type?: string;
+  actor?: string;
+  operator_id?: string;
+  target_type?: string;
+  target_id?: string;
+  details?: string;
+  description?: string;
+  severity?: string;
+  ip_address?: string;
   created_at: string;
+}
+
+export interface GraphNode {
+  id: string;
+  type: string;
+  label: string;
+  properties?: Record<string, any>;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  type: string;
+  properties?: Record<string, any>;
+}
+
+export interface KnowledgeGraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
 }

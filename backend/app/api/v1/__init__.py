@@ -13,6 +13,12 @@ from backend.app.api.v1.ai import router as ai_router
 from backend.app.api.v1.pcap import router as pcap_router
 from backend.app.api.v1.email import router as email_router
 from backend.app.api.v1.crypto import router as crypto_router
+from backend.app.api.v1.policies import router as policies_router
+from backend.app.api.v1.threat_intel import router as threat_intel_router
+from backend.app.api.v1.admin import router as admin_router
+from backend.app.api.v1.research import router as research_router
+from backend.app.api.v1.reports import router as reports_router
+from backend.app.api.v1.settings import router as settings_router
 
 api_router = APIRouter()
 
@@ -29,3 +35,9 @@ api_router.include_router(ai_router)
 api_router.include_router(pcap_router)
 api_router.include_router(email_router)
 api_router.include_router(crypto_router)
+api_router.include_router(policies_router)
+api_router.include_router(threat_intel_router)
+api_router.include_router(admin_router)
+api_router.include_router(research_router)
+api_router.include_router(reports_router)
+api_router.include_router(settings_router)

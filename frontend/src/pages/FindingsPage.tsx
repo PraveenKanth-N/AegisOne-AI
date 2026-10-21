@@ -136,7 +136,7 @@ export const FindingsPage: React.FC = () => {
                       <h3 className="text-sm font-semibold text-white hover:text-sky-400 transition-colors">
                         {finding.title}
                       </h3>
-                      {getSeverityBadge(finding.risk_level)}
+                      {getSeverityBadge(finding.risk_level || 'MEDIUM')}
                       <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">
                         {finding.cwe_id}
                       </span>

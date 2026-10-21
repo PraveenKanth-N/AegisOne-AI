@@ -3,6 +3,81 @@ import {
   Remediation, ValidationRun, DashboardSummary, AuditLog
 } from '../types';
 
+export type {
+  Project, Asset, Scan, Finding, Evidence,
+  Remediation, ValidationRun, DashboardSummary, AuditLog
+};
+
+export interface AIAnalysis {
+  finding_id: string;
+  vulnerability_type?: string;
+  exploitability_score?: number;
+  confidence_score?: number;
+  root_cause?: string;
+  remediation_guidance?: string;
+}
+
+export interface FindingEvidence {
+  id?: string;
+  finding_id: string;
+  tool_name: string;
+  raw_snippet?: string;
+  raw_payload?: string;
+  confidence: number;
+}
+
+export interface RiskDetail {
+  finding_id: string;
+  contextual_risk_score?: number;
+  risk_level?: string;
+  cvss_vector?: string;
+}
+
+export interface Policy {
+  id: string;
+  name: string;
+  framework: string;
+  version: string;
+  description: string;
+  status: string;
+  control_count: number;
+  passing_controls: number;
+  compliance_score: number;
+  controls?: any[];
+}
+
+export interface ThreatIntel {
+  cisa_kev: any[];
+  cve_correlations: any[];
+  feeds_active: any[];
+  summary: {
+    total_cves_monitored: number;
+    active_exploits_count: number;
+    epss_high_risk_count: number;
+  };
+}
+
+export interface AccessControl {
+  users: any[];
+  roles: any[];
+  security_policies: any;
+}
+
+export interface SystemIntegrations {
+  integrations: any[];
+  system_status: {
+    overall_health: string;
+    services_online: number;
+    services_total: number;
+  };
+}
+
+export interface ResearchBenchmarks {
+  research_questions: any[];
+  benchmark_comparison: any[];
+  dataset_info: any;
+}
+
 const BASE_URL = '/api/v1';
 
 async function fetchJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
@@ -32,11 +107,26 @@ export const api = {
   }),
 
   // Scans
-  startScan: (projectId: string, scanType: string = 'HYBRID_FULL') =>
-    fetchJSON<Scan>(`/scans/project/${projectId}`, {
-      method: 'POST',
-      body: JSON.stringify({ scan_type: scanType }),
-    }),
+  startScan: (
+    projectIdOrConfig: string | { project_id?: string; target_url?: string; scan_type?: string },
+    scanType: string = 'HYBRID_FULL'
+  ) => {
+    if (typeof projectIdOrConfig === 'string') {
+      return fetchJSON<Scan>(`/scans/project/${projectIdOrConfig}`, {
+        method: 'POST',
+        body: JSON.stringify({ scan_type: scanType }),
+      });
+    } else {
+      const pId = projectIdOrConfig.project_id || 'default';
+      return fetchJSON<Scan>(`/scans/project/${pId}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          scan_type: projectIdOrConfig.scan_type || scanType,
+          target_url: projectIdOrConfig.target_url
+        }),
+      });
+    }
+  },
   getScan: (scanId: string) => fetchJSON<Scan>(`/scans/${scanId}`),
   getScanFindings: (scanId: string) => fetchJSON<Finding[]>(`/scans/${scanId}/findings`),
   getProjectScans: (projectId: string) => fetchJSON<Scan[]>(`/scans/project/${projectId}/all`),
@@ -45,6 +135,7 @@ export const api = {
   getFindings: () => fetchJSON<Finding[]>('/findings'),
   getFinding: (id: string) => fetchJSON<Finding>(`/findings/${id}`),
   getEvidence: (findingId: string) => fetchJSON<Evidence[]>(`/findings/${findingId}/evidence`),
+  getFindingEvidence: (findingId: string) => fetchJSON<any>(`/findings/${findingId}/evidence`),
   getRiskDetail: (findingId: string) => fetchJSON<any>(`/findings/${findingId}/risk-detail`),
 
   // AI Security Analyst
@@ -63,6 +154,7 @@ export const api = {
   getValidationRun: (runId: string) => fetchJSON<ValidationRun>(`/sandbox/run/${runId}`),
   getRemediationRuns: (remediationId: string) =>
     fetchJSON<ValidationRun[]>(`/sandbox/remediation/${remediationId}`),
+  getDockerStatus: () => fetchJSON<any>('/sandbox/docker-status'),
 
   // Knowledge Graph
   getGraph: () => fetchJSON<any>('/graph'),
@@ -90,4 +182,16 @@ export const api = {
 
   // Audit
   getAuditLogs: () => fetchJSON<AuditLog[]>('/audit'),
+  verifyAuditChain: () => fetchJSON<any>('/audit/verify-chain'),
+
+  // Compliance & Threat Intelligence
+  getPolicies: () => fetchJSON<any>('/policies'),
+  getThreatIntelligence: () => fetchJSON<any>('/threat-intelligence'),
+
+  // Administration & Research
+  getSystemIntegrations: () => fetchJSON<any>('/admin/integrations'),
+  getAccessControl: () => fetchJSON<any>('/admin/access'),
+  getResearchBenchmarks: () => fetchJSON<any>('/research/benchmarks'),
+  getReports: () => fetchJSON<any[]>('/reports'),
+  getSettings: () => fetchJSON<any>('/settings'),
 };
