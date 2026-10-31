@@ -25,6 +25,9 @@ latex_code = r"""\documentclass[journal,twoside]{IEEEtran}
     citecolor=blue
 }
 
+% Suppress artificial vertical stretching across columns
+\raggedbottom
+
 % Completely suppress all running headers and footers across every single page
 \pagestyle{empty}
 \makeatletter
@@ -36,11 +39,11 @@ latex_code = r"""\documentclass[journal,twoside]{IEEEtran}
 \let\ps@IEEEtitlepagestyle\ps@empty
 \makeatother
 
-% Compact bibliography item spacing to prevent orphan reference spillover on the final page
+% Compact bibliography item spacing to prevent orphan reference spillover
 \let\oldthebibliography\thebibliography
 \renewcommand{\thebibliography}[1]{%
   \oldthebibliography{#1}%
-  \setlength{\itemsep}{0.4pt plus 0.2pt}%
+  \setlength{\itemsep}{0.8pt plus 0.3pt}%
   \setlength{\parskip}{0pt}%
 }
 
@@ -425,31 +428,17 @@ As delineated in Table \ref{tab:ablation}, systematically disabling pipeline com
     \item Eliminating container sandbox verification further degrades the zero-regression deployment rate to 61.2\%, proving that isolated runtime testing and automated rollback are strictly essential to prevent broken code from shipping.
 \end{itemize}
 
-\enlargethispage{2\baselineskip}
-
 \section{Discussion and Limitations}
 While AegisOne AI demonstrates robust performance across a diverse spectrum of web application architectures, container lifecycle overhead introduces an average turnaround latency of 34.2 seconds per patch. In applications with multi-factor authentication sequences, the dynamic fuzzer requires recorded session macros to traverse deeply nested views. Future work will investigate hardware-accelerated microVM sandboxing to reduce verification latency to sub-second regimes.
 
-\section{Declarations}
-\subsection{Data and Software Availability Statement}
-The complete software source code, experimental evaluation benchmarks, containerized vulnerable lab targets, and analysis scripts for AegisOne AI are publicly available in our GitHub repository at:
-\begin{center}
-\url{https://github.com/PraveenKanth-N/AegisOne-AI}
-\end{center}
-The repository includes comprehensive setup scripts, unit test suites, and documentation released under the open-source MIT License to ensure full academic reproducibility.
+\section*{Declarations}
+\textbf{Data and Software Availability Statement:} The complete software source code, experimental evaluation benchmarks, containerized vulnerable lab targets, and analysis scripts for AegisOne AI are publicly available in our GitHub repository at \url{https://github.com/PraveenKanth-N/AegisOne-AI} under the open-source MIT License to ensure full academic reproducibility.
 
-\subsection{Funding Information}
-This research received no external financial grant or funding support from any agency in the public, commercial, or not-for-profit sectors.
+\textbf{Funding Information:} This research received no external financial grant or funding support from any agency in the public, commercial, or not-for-profit sectors.
 
-\subsection{Conflicts of Interest}
-The authors declare that they have no financial or non-financial conflicts of interest that could be perceived as influencing the objectivity or integrity of the reported research.
+\textbf{Conflicts of Interest:} The authors declare that they have no financial or non-financial conflicts of interest that could be perceived as influencing the objectivity or integrity of the reported research.
 
-\subsection{Authors' Contributions}
-\begin{itemize}
-    \item \textbf{Dr. Vijayashree J} served as the research supervisor, formulated the primary theoretical methodology, validated the experimental framework, and reviewed the academic manuscript.
-    \item \textbf{Praveen Kanth N} architected the end-to-end system, designed and implemented the AST taint engine, developed the Security Knowledge Graph, built the containerized Docker sandbox validation harness, conducted the 120-scenario benchmark evaluation, and drafted the primary manuscript.
-    \item \textbf{Sankavi M} developed the dynamic fuzzing integration harness, designed the automated state rollback mechanism, collected and processed empirical telemetry, executed UI/UX verification workflows, and contributed to manuscript drafting and tabular formatting.
-\end{itemize}
+\textbf{Authors' Contributions:} \textbf{Dr.~Vijayashree~J} served as the research supervisor, formulated the primary theoretical methodology, validated the experimental framework, and reviewed the academic manuscript. \textbf{Praveen~Kanth~N} architected the end-to-end system, designed and implemented the AST taint engine, developed the Security Knowledge Graph, built the containerized Docker sandbox validation harness, conducted the 120-scenario benchmark evaluation, and drafted the primary manuscript. \textbf{Sankavi~M} developed the dynamic fuzzing integration harness, designed the automated state rollback mechanism, collected and processed empirical telemetry, executed UI/UX verification workflows, and contributed to manuscript drafting and tabular formatting.
 
 \balance
 
@@ -566,4 +555,4 @@ MITRE Corporation, ``Common Weakness Enumeration (CWE) version 4.14,'' 2024. [On
 with open(r"D:\AegisOne-AI\paper\aegisone_ieee_access.tex", "w", encoding="utf-8") as f:
     f.write(latex_code.strip() + "\n")
 
-print("Updated D:\\AegisOne-AI\\paper\\aegisone_ieee_access.tex successfully!")
+print("D:\\AegisOne-AI\\paper\\aegisone_ieee_access.tex updated successfully!")
