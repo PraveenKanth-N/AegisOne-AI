@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AegisOne AI — Live Scan Execution &amp; Findings Stream (SCN-8092)</title>
+<!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary": "#68000e",
+            "on-background": "#e5e1e6",
+            "surface-dim": "#131316",
+            "on-tertiary-fixed-variant": "#8f0b25",
+            "on-secondary-fixed": "#001f27",
+            "primary-fixed-dim": "#ffb3af",
+            "secondary-fixed-dim": "#65d4f6",
+            "on-tertiary-container": "#5b0012",
+            "surface-bright": "#39393c",
+            "primary": "#ffb3af",
+            "secondary-fixed": "#b3ebff",
+            "surface-container-lowest": "#0e0e11",
+            "surface-container": "#201f23",
+            "secondary": "#65d4f6",
+            "on-secondary-container": "#002e3a",
+            "on-surface": "#e5e1e6",
+            "on-primary-container": "#5c000b",
+            "surface-container-high": "#2a292d",
+            "outline-variant": "#5e3f3d",
+            "error-container": "#93000a",
+            "on-tertiary": "#680016",
+            "surface-container-low": "#1b1b1f",
+            "background": "#131316",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#f65c67",
+            "tertiary-fixed": "#ffdad9",
+            "surface-variant": "#353438",
+            "surface": "#131316",
+            "surface-container-highest": "#353438",
+            "inverse-surface": "#e5e1e6",
+            "secondary-container": "#139ebd",
+            "tertiary-fixed-dim": "#ffb3b4",
+            "inverse-on-surface": "#303034",
+            "primary-container": "#ff5357",
+            "on-secondary-fixed-variant": "#004e5f",
+            "on-primary-fixed": "#410006",
+            "inverse-primary": "#bf0024",
+            "surface-tint": "#ffb3af",
+            "on-primary-fixed-variant": "#930019",
+            "on-secondary": "#003642",
+            "tertiary": "#ffb3b4",
+            "error": "#ffb4ab",
+            "on-tertiary-fixed": "#40000a",
+            "on-error": "#690005",
+            "primary-fixed": "#ffdad8",
+            "on-surface-variant": "#e8bcb9",
+            "outline": "#af8785"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin-mobile": "1.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "margin": "3rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-xl": ["Space Grotesk"],
+            "display-hero-mobile": ["Space Grotesk"],
+            "display-hero": ["Space Grotesk"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-code": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "label-badge": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-code": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "label-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Custom scanline HUD aesthetics and subtle pulses */
+    @keyframes tacticalPulse {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 6px rgba(101, 212, 246, 0.6)); }
+      50% { opacity: 0.35; filter: drop-shadow(0 0 2px rgba(101, 212, 246, 0.2)); }
+    }
+    @keyframes crimsonBeacon {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 8px rgba(242, 13, 50, 0.7)); }
+      50% { opacity: 0.4; filter: drop-shadow(0 0 2px rgba(242, 13, 50, 0.2)); }
+    }
+    .pulse-cyan {
+      animation: tacticalPulse 1.8s infinite ease-in-out;
+    }
+    .pulse-crimson {
+      animation: crimsonBeacon 1.4s infinite ease-in-out;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0e0e11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #353438;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5e3f3d;
+    }
+  </style>
+</head>
+<body class="bg-[#08080B] text-on-surface antialiased overflow-x-hidden min-h-screen selection:bg-primary-container selection:text-white">
+<!-- ========================================================================= -->
+<!-- SHARED SIDEBAR COMPONENT (Anchored to Shared Components JSON)           -->
+<!-- ========================================================================= -->
+<aside class="fixed top-0 left-0 h-screen w-64 border-r border-outline-variant/30 bg-surface-container-lowest z-40 flex flex-col justify-between p-space-md hidden md:flex select-none">
+<!-- Header Block -->
+<div>
+<div class="flex items-center gap-3 px-2 py-1 mb-6">
+<div class="w-9 h-9 rounded bg-surface-container border border-outline-variant/50 flex items-center justify-center text-primary-container shadow-[0_0_12px_rgba(255,83,87,0.25)]">
+<span class="material-symbols-outlined text-[20px]" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm font-bold tracking-tight text-primary">AegisOne AI</span>
+<span class="text-label-badge font-label-badge text-on-surface-variant/70 tracking-widest text-[10px]">DEFENSE KERNEL v4.2</span>
+</div>
+</div>
+<!-- Navigation Cluster -->
+<nav class="space-y-1">
+<!-- Tab 1: Overview -->
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors duration-150 text-body-md font-body-md group" href="#overview">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<!-- Tab 2: Analyze (ACTIVE / Scan Timeline & Execution) -->
+<a class="flex items-center gap-3 py-2 rounded border-l-2 border-primary-container text-primary font-bold bg-surface-container-low/40 pl-3 transition-all duration-150 text-body-md font-body-md" href="#analyze">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<div class="flex items-center justify-between flex-1 pr-2">
+<span>Analyze</span>
+<span class="text-[9px] px-1.5 py-0.5 rounded bg-primary-container/20 border border-primary-container/40 text-primary uppercase font-label-badge tracking-wider">LIVE</span>
+</div>
+</a>
+<!-- Sub-item under Analyze to visually represent active Scan Timeline execution -->
+<div class="ml-7 pl-3 border-l border-outline-variant/30 space-y-1 py-1">
+<div class="text-[11px] font-label-code text-primary flex items-center gap-2 font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+<span>Scan Execution</span>
+</div>
+<div class="text-[11px] font-label-code text-on-surface-variant/60 hover:text-on-surface cursor-pointer">
+<span>SCN-8092 Telemetry</span>
+</div>
+</div>
+<!-- Tab 3: Verify -->
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors duration-150 text-body-md font-body-md group" href="#verify">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors" data-icon="verified_user">verified_user</span>
+<span>Verify</span>
+</a>
+<!-- Tab 4: Research -->
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors duration-150 text-body-md font-body-md group" href="#research">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors" data-icon="biotech">biotech</span>
+<span>Research</span>
+</a>
+<!-- Tab 5: System -->
+<a class="flex items-center gap-3 px-3 py-2 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors duration-150 text-body-md font-body-md group" href="#system">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:text-primary transition-colors" data-icon="tune">tune</span>
+<span>System</span>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer & Scope Guard Status Indicator -->
+<div class="space-y-3 pt-3 border-t border-outline-variant/20">
+<!-- Guard Status Pill Card -->
+<div class="p-2.5 rounded bg-surface-container-lowest border border-outline-variant/40 bg-gradient-to-r from-surface-container-lowest to-surface-container-low">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-fixed-dim pulse-cyan"></span>
+<span class="text-label-badge font-label-badge text-secondary-fixed-dim text-[10px] tracking-wider uppercase">SCOPE GUARD: ARMED</span>
+</div>
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="shield">shield</span>
+</div>
+<p class="text-[10px] font-label-code text-on-surface-variant leading-tight truncate">college-placement-v2.1</p>
+<p class="text-[9px] font-label-code text-on-surface-variant/60 tracking-tight">Strict Whitelist Deterministic</p>
+</div>
+<!-- Secondary Links -->
+<div class="grid grid-cols-3 gap-1 pt-1 text-center font-label-code text-[11px] text-on-surface-variant">
+<a class="p-1.5 rounded hover:bg-surface-container-high/40 hover:text-on-surface transition-colors" href="#docs">Docs</a>
+<a class="p-1.5 rounded hover:bg-surface-container-high/40 hover:text-on-surface transition-colors" href="#terminal">Terminal</a>
+<a class="p-1.5 rounded hover:bg-surface-container-high/40 hover:text-on-surface transition-colors" href="#settings">Settings</a>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- SHARED TOP NAVBAR (Anchored to Shared Components JSON)                  -->
+<!-- ========================================================================= -->
+<header class="fixed top-0 left-0 right-0 h-14 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/30 z-30 md:pl-64 flex items-center justify-between px-space-lg">
+<!-- Left Cluster: Tactical Breadcrumbs & Cluster Selector -->
+<div class="flex items-center gap-3 overflow-hidden text-body-sm">
+<div class="flex items-center gap-1.5 font-label-code text-[12px] text-on-surface-variant/80">
+<span class="hover:text-on-surface cursor-pointer">Console</span>
+<span class="text-outline-variant">/</span>
+<span class="hover:text-on-surface cursor-pointer">Scans</span>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-semibold">SCN-8092</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface">Execution</span>
+</div>
+<!-- Node Badges -->
+<div class="hidden xl:flex items-center gap-2 pl-4 border-l border-outline-variant/30 text-label-badge">
+<span class="px-2 py-0.5 rounded bg-surface-container-low border border-outline-variant/40 text-on-surface text-[11px] font-label-code flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          PROD-CLUSTER-01
+        </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low border border-outline-variant/40 text-on-surface-variant text-[11px] font-label-code">
+          US-EAST-VA
+        </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-low border border-outline-variant/40 text-secondary text-[11px] font-label-code flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="sensors">sensors</span>
+          SYS-LATENCY 14ms
+        </span>
+</div>
+</div>
+<!-- Right Cluster: Actions & Operator Signature -->
+<div class="flex items-center gap-2 sm:gap-3">
+<!-- Target Display Badge -->
+<div class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container-low border border-outline-variant/30 text-body-sm font-label-code text-[11px] text-on-surface-variant">
+<span class="text-on-surface font-medium text-primary">Target:</span>
+<span class="text-on-surface truncate max-w-[210px]">college-placement-v2.1 [8001]</span>
+</div>
+<!-- Action: Cancel Scan -->
+<button class="px-3 py-1.5 rounded border border-outline-variant/40 bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:border-primary-container/60 transition-colors text-label-badge font-label-badge text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="cancel">cancel</span>
+<span class="hidden sm:inline">Cancel Scan</span>
+</button>
+<!-- Action: Export Scan Log -->
+<button class="px-3 py-1.5 rounded bg-surface-container-high border border-outline-variant/40 text-on-surface hover:text-white hover:border-secondary transition-colors text-label-badge font-label-badge text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="file_download">file_download</span>
+<span class="hidden sm:inline">Export Log</span>
+</button>
+<!-- Trigger Scan CTA / Rescan indicator -->
+<button class="px-3 py-1.5 rounded bg-primary-container text-on-primary-container font-headline-sm text-[12px] font-bold tracking-tight hover:shadow-[0_0_16px_rgba(242,13,50,0.45)] transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="radar">radar</span>
+<span>TRIGGER SCAN</span>
+</button>
+<!-- User Signature -->
+<div class="pl-2 border-l border-outline-variant/30 flex items-center gap-2">
+<div class="w-7 h-7 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-label-code text-xs font-bold" title="Analyst_442">
+          A4
+        </div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- MAIN CANVASES & OPERATING GRID                                           -->
+<!-- ========================================================================= -->
+<main class="md:pl-64 pt-14 pb-16 min-h-screen">
+<div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- ===================================================================== -->
+<!-- SECTION 1: HEADER & LIVE SCAN HERO OVERVIEW                          -->
+<!-- ===================================================================== -->
+<section class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 relative overflow-hidden shadow-2xl backdrop-blur-xl">
+<!-- Ambient subtle crimson glow element in background -->
+<div class="absolute -top-16 -right-16 w-80 h-80 rounded-full bg-primary-container/10 filter blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-20 left-1/3 w-96 h-40 rounded-full bg-secondary/5 filter blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+<div class="space-y-1.5">
+<div class="flex items-center flex-wrap gap-2.5">
+<span class="text-label-badge font-label-badge text-[12px] px-2.5 py-0.5 rounded bg-surface-container-high border border-outline-variant/50 text-primary font-bold">
+                SCN-8092
+              </span>
+<div class="flex items-center gap-2 px-3 py-0.5 rounded bg-secondary-container/20 border border-secondary/40 text-secondary text-label-badge font-label-badge text-[11px]">
+<span class="w-2 h-2 rounded-full bg-secondary pulse-cyan"></span>
+<span>RUNNING (STAGE 4/5 · AST TAINT &amp; DYNAMIC RE-SCAN)</span>
+</div>
+<span class="text-label-code font-label-code text-on-surface-variant/70 text-[11px] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-secondary" data-icon="sync">sync</span>
+                POLLING ACTIVE (2s)
+              </span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface tracking-tight flex items-center gap-2 pt-1">
+              Live Scan Execution &amp; Findings Stream
+            </h1>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-4xl">
+              Track real-time assessment progress, inspect evidence-grounded findings as they emerge, and review runtime execution telemetry.
+            </p>
+</div>
+<!-- Scan Context Chips -->
+<div class="flex flex-col sm:flex-row xl:flex-col gap-2 pt-2 xl:pt-0 shrink-0 font-label-code text-[11px] text-on-surface-variant">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded bg-surface-container-low border border-outline-variant/20">
+<span class="material-symbols-outlined text-[15px] text-secondary" data-icon="hub">hub</span>
+<span class="text-on-surface">Target:</span>
+<span class="text-primary truncate">college-placement-v2.1</span>
+<span class="text-on-surface-variant/60">(FastAPI/PyMySQL :8001)</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-1.5 rounded bg-surface-container-low border border-outline-variant/20">
+<span class="material-symbols-outlined text-[15px] text-on-surface-variant" data-icon="timer">timer</span>
+<span>Started: <strong class="text-on-surface">14:15:02 UTC</strong></span>
+<span class="text-outline-variant">|</span>
+<span>Elapsed: <strong class="text-secondary">01m 24s</strong></span>
+<span class="text-outline-variant">|</span>
+<span>Profile: <span class="text-on-surface">Controlled Lab</span></span>
+</div>
+</div>
+</div>
+<!-- Authorized Scope Line -->
+<div class="mt-4 pt-3 border-t border-outline-variant/20 flex flex-wrap items-center justify-between text-[11px] font-label-code text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px] text-secondary-fixed-dim" data-icon="verified">verified</span>
+<span>Authorized Scope: <span class="text-on-surface font-medium">7 In-Scope Endpoints</span></span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant/70">1 Excluded (<code class="text-primary-fixed-dim bg-surface-container-high px-1 rounded">/admin/internal-metrics</code>)</span>
+</div>
+<div class="flex items-center gap-3 text-[11px]">
+<span>Deterministic Policy: <span class="text-secondary">DP-SW-401-STRICT</span></span>
+<span class="text-outline-variant">•</span>
+<span>gVisor Sandbox: <span class="text-emerald-400 font-semibold">Active &amp; Isolated</span></span>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 2: TOP 4 EXECUTION METRIC CARDS                               -->
+<!-- ===================================================================== -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Metric 1: Checks Completed -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/30 hover:border-outline-variant/60 transition-all">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1">
+<span class="font-medium">Checks Completed</span>
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="fact_check">fact_check</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-headline-lg font-headline-lg text-on-surface">6 / 8</span>
+<span class="text-label-badge font-label-badge text-secondary text-xs">75% EXECUTED</span>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mb-2">
+<div class="bg-gradient-to-r from-secondary to-primary-container h-full rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[11px] font-label-code text-on-surface-variant/80">
+            5 Passed · 1 Detected · 2 In-Flight
+          </p>
+</div>
+<!-- Metric 2: Findings Observed -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/30 hover:border-outline-variant/60 transition-all">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1">
+<span class="font-medium">Findings Observed</span>
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="bug_report">bug_report</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-headline-lg font-headline-lg text-primary">2 Findings</span>
+<span class="text-label-badge font-label-badge text-amber-400 text-xs">+1 Provisional</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mb-2">
+<div class="bg-primary-container h-full rounded-full" style="width: 60%"></div>
+</div>
+<p class="text-[11px] font-label-code text-on-surface-variant/80">
+            1 High-Risk CWE-89 · 1 Candidate XSS · 0 Suppressed
+          </p>
+</div>
+<!-- Metric 3: Critical & High -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-primary-container/40 relative group cursor-pointer hover:border-primary transition-all shadow-[0_0_15px_rgba(242,13,50,0.1)]">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1">
+<span class="font-medium text-primary">Critical &amp; High</span>
+<span class="w-2 h-2 rounded-full bg-primary-container pulse-crimson"></span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-headline-lg font-headline-lg text-primary">1 Critical</span>
+<span class="text-label-badge font-label-badge text-primary-fixed-dim text-xs">CWE-89 SQLi</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-label-code text-on-surface-variant/90 pt-1 border-t border-outline-variant/20">
+<span>CVSS 9.2 · Exploit Validated</span>
+<span class="text-primary group-hover:underline flex items-center">Drill-Down →</span>
+</div>
+</div>
+<!-- Metric 4: Execution Latency & Health -->
+<div class="p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/30 hover:border-outline-variant/60 transition-all">
+<div class="flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant mb-1">
+<span class="font-medium">Execution Latency &amp; Health</span>
+<span class="material-symbols-outlined text-[16px] text-emerald-400" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div class="flex items-baseline gap-2 mb-2">
+<span class="text-headline-lg font-headline-lg text-on-surface">1m 24s</span>
+<span class="text-label-badge font-label-badge text-emerald-400 text-xs">0 FAULTS</span>
+</div>
+<p class="text-[11px] font-label-code text-on-surface-variant/80">
+            Mem 312MB / 1.0 CPU · gVisor Sandbox OK
+          </p>
+<div class="flex items-center gap-1.5 text-[10px] font-label-code text-secondary mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>Target responsive (RTT: 4.2ms)</span>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 3: MAIN TWO-COLUMN OPERATING GRID                             -->
+<!-- ===================================================================== -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- =================================================================== -->
+<!-- LEFT COLUMN (~58% / 7 cols): Pipeline & Findings & Deep Inspection  -->
+<!-- =================================================================== -->
+<div class="lg:col-span-7 space-y-6">
+<!-- 1. Execution Pipeline Stage Tracker -->
+<div class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="route">route</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Execution Pipeline Stage Tracker</h2>
+</div>
+<span class="text-label-badge font-label-badge text-secondary text-[11px] px-2 py-0.5 rounded bg-secondary-container/20 border border-secondary/30">
+                ACTIVE PIPELINE #8092-A
+              </span>
+</div>
+<!-- Stages Flow -->
+<div class="space-y-2.5 font-label-code text-[12px]">
+<!-- Stage 1 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/30 flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-emerald-950/60 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<span class="text-on-surface font-medium">Stage 1: Scope &amp; Target Handshake</span>
+<span class="block text-[11px] text-on-surface-variant/70">14ms · sha:d894e77 baseline locked</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-label-badge font-label-badge text-[10px]">
+                  PASSED
+                </span>
+</div>
+<!-- Stage 2 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/30 flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-emerald-950/60 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<span class="text-on-surface font-medium">Stage 2: Passive Headers &amp; CORS Scan</span>
+<span class="block text-[11px] text-on-surface-variant/70">180ms · 3/3 checks clean &amp; compliant</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-label-badge font-label-badge text-[10px]">
+                  PASSED
+                </span>
+</div>
+<!-- Stage 3 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/30 flex items-center justify-between gap-2">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-emerald-950/60 border border-emerald-500/50 flex items-center justify-center text-emerald-400 shrink-0">
+<span class="material-symbols-outlined text-[14px]" data-icon="check">check</span>
+</div>
+<div>
+<span class="text-on-surface font-medium">Stage 3: SBOM &amp; Dependency Integrity</span>
+<span class="block text-[11px] text-on-surface-variant/70">420ms · 0 CVEs in requirements.txt (42 audited)</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 text-label-badge font-label-badge text-[10px]">
+                  PASSED
+                </span>
+</div>
+<!-- Stage 4: RUNNING / CURRENT -->
+<div class="p-3 rounded bg-surface-container-low border-2 border-primary-container relative overflow-hidden shadow-[0_0_20px_rgba(242,13,50,0.15)]">
+<div class="flex items-center justify-between gap-2 relative z-10">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary-container/20 border border-primary-container flex items-center justify-center text-primary shrink-0 animate-spin">
+<span class="material-symbols-outlined text-[14px]" data-icon="sync">sync</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-on-surface font-semibold">Stage 4: Web Application Security (AST Taint)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container pulse-crimson"></span>
+</div>
+<span class="block text-[11px] text-primary-fixed-dim">Current Stage · Synthesizing taint graph on /api/v1/students/search</span>
+</div>
+</div>
+<span class="px-2.5 py-0.5 rounded bg-primary-container text-on-primary-container font-headline-sm font-bold text-[10px] tracking-wider animate-pulse">
+                    RUNNING
+                  </span>
+</div>
+<!-- Mini Progress indicator -->
+<div class="mt-2.5 pt-2 border-t border-outline-variant/30 flex items-center justify-between text-[11px] text-on-surface-variant">
+<span>Analyzing AST sink paths: 4 / 7 routes complete</span>
+<span class="text-secondary">57% sub-stage</span>
+</div>
+</div>
+<!-- Stage 5: QUEUED -->
+<div class="p-3 rounded bg-surface-container-low/50 border border-outline-variant/20 flex items-center justify-between gap-2 opacity-65">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant/40 flex items-center justify-center text-on-surface-variant shrink-0">
+<span class="material-symbols-outlined text-[14px]" data-icon="hourglass_top">hourglass_top</span>
+</div>
+<div>
+<span class="text-on-surface font-medium">Stage 5: Dynamic Probe &amp; Normalization</span>
+<span class="block text-[11px] text-on-surface-variant/70">Pending Stage 4 completion · Behavioral confirmation sweep</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant/30 text-on-surface-variant text-label-badge font-label-badge text-[10px]">
+                  QUEUED
+                </span>
+</div>
+</div>
+</div>
+<!-- 2. Live Findings Discovered Stream -->
+<div class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="crisis_alert">crisis_alert</span>
+                  Live Findings Discovered Stream
+                </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Real-time vulnerability findings flagged by AST analysis and live fuzzing probes.</p>
+</div>
+<span class="text-label-badge font-label-badge text-[11px] text-on-surface-variant">2 EMERGENCE NODES</span>
+</div>
+<!-- Finding Cards -->
+<div class="space-y-3">
+<!-- Finding 1: ACTIVE / SELECTED CWE-89 -->
+<div class="p-4 rounded-lg bg-surface-container-low border-2 border-primary-container shadow-[0_0_20px_rgba(242,13,50,0.18)] cursor-pointer relative">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-badge font-bold text-[10px] tracking-wider uppercase">
+                        CONFIRMED
+                      </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest border border-primary/40 text-primary font-label-badge font-semibold text-[10px]">
+                        CRITICAL · CVSS 9.2
+                      </span>
+<span class="text-label-badge font-label-badge text-[10px] text-secondary">
+                        Contextual Risk: 8.6/10
+                      </span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-white pt-1">
+                      CWE-89: SQL Injection in Search Controller
+                    </h3>
+</div>
+<span class="text-label-badge font-label-badge text-[10px] text-on-surface-variant shrink-0">
+                    14:15:38 UTC (+36s)
+                  </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-outline-variant/20 font-label-code text-[11px] text-on-surface-variant">
+<div>
+<span class="text-on-surface-variant/70">Asset:</span>
+<span class="text-primary-fixed-dim font-medium ml-1">/api/v1/students/search.py:42</span>
+</div>
+<div>
+<span class="text-on-surface-variant/70">Check:</span>
+<span class="text-on-surface ml-1">Aegis AST Taint Analyzer v4.2 (PySQL-01)</span>
+</div>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+<strong class="text-primary font-medium">Evidence Preview:</strong> User parameter <code class="text-primary bg-surface-container-highest px-1 py-0.5 rounded">query</code> is concatenated directly into raw SQL execution statement without parameterized query binding or input sanitation.
+                </p>
+<div class="mt-3 flex items-center justify-between text-[11px] font-label-code text-primary">
+<span class="flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[14px]" data-icon="center_focus_strong">center_focus_strong</span>
+                    SELECTED FOR DEEP INSPECTION
+                  </span>
+<span class="text-secondary text-[11px] flex items-center gap-1">
+                    Exploit Proof Generated <span class="material-symbols-outlined text-[12px]" data-icon="chevron_right">chevron_right</span>
+</span>
+</div>
+</div>
+<!-- Finding 2: PROVISIONAL CWE-79 -->
+<div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant/30 hover:border-amber-400/50 transition-all cursor-pointer">
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 font-label-badge font-bold text-[10px] tracking-wider uppercase">
+                        PROVISIONAL
+                      </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest border border-outline-variant/40 text-amber-200 font-label-badge font-semibold text-[10px]">
+                        MEDIUM · CVSS 6.1
+                      </span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface pt-1">
+                      CWE-79: Cross-Site Scripting (Reflected Candidate)
+                    </h3>
+</div>
+<span class="text-label-badge font-label-badge text-[10px] text-on-surface-variant shrink-0">
+                    14:16:04 UTC (+62s)
+                  </span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-3 pt-3 border-t border-outline-variant/20 font-label-code text-[11px] text-on-surface-variant">
+<div>
+<span class="text-on-surface-variant/70">Asset:</span>
+<span class="text-on-surface font-medium ml-1">/profile/bio [GET, POST]</span>
+</div>
+<div>
+<span class="text-on-surface-variant/70">Check:</span>
+<span class="text-on-surface ml-1">Core Lexer Engine v2.0</span>
+</div>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+                  Status: Awaiting secondary payload reflection verification in Stage 5 dynamic probe sweep. Raw HTML echo detected in response header stream.
+                </p>
+</div>
+</div>
+</div>
+<!-- 3. Selected Finding Deep Inspection Card -->
+<div class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="biotech">biotech</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Selected Finding Deep Inspection</h2>
+</div>
+<span class="text-label-badge font-label-badge text-[11px] text-primary font-bold">CWE-89 SINK TRACE</span>
+</div>
+<!-- Code Snippet Box -->
+<div class="space-y-2">
+<div class="flex items-center justify-between text-label-code text-[11px] text-on-surface-variant">
+<span>Vulnerable AST Location: <code class="text-primary font-semibold">search.py (Lines 40-44)</code></span>
+<span class="text-on-surface-variant/70">Dialect: Python 3.11 / PyMySQL</span>
+</div>
+<div class="p-3.5 rounded bg-surface-container-lowest border border-outline-variant/40 font-label-code text-[12px] leading-relaxed overflow-x-auto text-on-surface">
+<div class="text-on-surface-variant/50"># Line 41: Untrusted user input ingress from FastAPI Request</div>
+<div class="text-on-surface-variant"><span class="text-secondary">query</span> = request.query_params.get(<span class="text-emerald-400">"q"</span>)</div>
+<div class="text-on-surface-variant/50"># Line 42: Taint Sink - Formatted string interpolated into SQL execute</div>
+<div class="bg-primary-container/20 text-white p-1 rounded border-l-2 border-primary-container my-1 font-semibold">
+<span class="text-primary">&gt;&gt;</span> db.execute(f<span class="text-emerald-300">"SELECT * FROM students WHERE id = '<span class="text-primary font-bold">{user_input}</span>'"</span>)
+                </div>
+<div class="text-on-surface-variant">records = db.fetchall()</div>
+</div>
+</div>
+<!-- Epistemological Distinction -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+<!-- Observed Evidence -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-1.5 text-secondary text-label-badge font-label-badge text-[11px] mb-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span>
+                  OBSERVED EVIDENCE
+                </div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+                  Scanner injected probe <code class="text-primary bg-surface-container px-1 py-0.2 rounded font-label-code text-[11px]">' OR '1'='1</code> resulting in raw SQLite/MySQL syntax error code 1064 and unrestricted record yield of all 1,280 student profiles.
+                </p>
+</div>
+<!-- Risk Engine Interpretation -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-1.5 text-primary text-label-badge font-label-badge text-[11px] mb-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="psychology">psychology</span>
+                  RISK ENGINE INTERPRETATION
+                </div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed">
+                  5-hop attack path reaches backend database with unconstrained PII exposure (Student IDs, SSN hashes, placement GPA). Exploitation requires 0 privileges and is remotely reachable via public HTTP.
+                </p>
+</div>
+</div>
+<!-- Suggested Next Action Buttons -->
+<div class="pt-3 border-t border-outline-variant/20 flex flex-wrap gap-2.5">
+<button class="px-3.5 py-2 rounded bg-primary-container text-on-primary-container font-headline-sm font-semibold text-body-sm hover:shadow-[0_0_12px_rgba(242,13,50,0.4)] transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="build">build</span>
+                Open in Remediation Workspace
+              </button>
+<button class="px-3.5 py-2 rounded bg-surface-container-high border border-outline-variant text-on-surface hover:border-secondary hover:text-secondary transition-all font-body-md text-body-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="account_tree">account_tree</span>
+                Trace in Knowledge Graph
+              </button>
+<button class="px-3.5 py-2 rounded bg-surface-container-high border border-outline-variant text-on-surface hover:border-primary transition-all font-body-md text-body-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="smart_toy">smart_toy</span>
+                Ask AI Analyst
+              </button>
+</div>
+</div>
+</div>
+<!-- =================================================================== -->
+<!-- RIGHT COLUMN (~42% / 5 cols): Event Stream & Safety Safeguards     -->
+<!-- =================================================================== -->
+<div class="lg:col-span-5 space-y-6">
+<!-- 1. Execution Event Stream (Live Telemetry Console) -->
+<div class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-secondary" data-icon="terminal">terminal</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Execution Event Stream</h2>
+</div>
+<!-- Lock and Controls -->
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-surface-container border border-outline-variant/30 text-label-badge font-label-badge text-[10px] text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary pulse-cyan"></span>
+                  AUTO-FOLLOW: ON
+                </span>
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-variant text-on-surface-variant hover:text-on-surface text-[10px] font-label-code">
+                  Latest
+                </button>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="flex items-center gap-1 overflow-x-auto pb-1 text-[11px] font-label-code border-b border-outline-variant/20">
+<button class="px-2.5 py-1 rounded bg-surface-container-high text-primary font-bold border-b border-primary">
+                ALL (28)
+              </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+                LIFECYCLE (6)
+              </button>
+<button class="px-2.5 py-1 rounded text-primary hover:bg-surface-container transition-colors font-medium">
+                FINDINGS (4)
+              </button>
+<button class="px-2.5 py-1 rounded text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+                CHECKS (14)
+              </button>
+<button class="px-2.5 py-1 rounded text-amber-300 hover:bg-surface-container transition-colors">
+                WARNINGS (1)
+              </button>
+</div>
+<!-- Terminal Log Window -->
+<div class="h-[430px] rounded bg-[#08080B] p-3.5 border border-outline-variant/30 font-label-code text-[11px] leading-relaxed overflow-y-auto space-y-2 select-text">
+<!-- Log Line 1 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:02.102]</span>
+<span class="text-secondary shrink-0 font-bold">[LIFECYCLE]</span>
+<span class="text-on-surface">Scan SCN-8092 queued by <span class="text-primary-fixed-dim">Analyst_442</span></span>
+</div>
+<!-- Log Line 2 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:02.240]</span>
+<span class="text-secondary shrink-0 font-bold">[SCOPE]</span>
+<span>Authorized target verified: <code class="text-on-surface">college-placement-v2.1</code> on port 8001</span>
+</div>
+<!-- Log Line 3 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:02.890]</span>
+<span class="text-on-surface-variant shrink-0 font-bold">[CHECK:INIT]</span>
+<span>Executing Stage 01 Scope &amp; Whitelist Policy SW-401</span>
+</div>
+<!-- Log Line 4 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:03.110]</span>
+<span class="text-emerald-400 shrink-0 font-bold">[CHECK:PASS]</span>
+<span>TLS 1.3 Strict Transport verified on localhost:8001</span>
+</div>
+<!-- Log Line 5 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:05.420]</span>
+<span class="text-secondary shrink-0 font-bold">[SBOM]</span>
+<span>Scanned 42 python packages via NIST NVD. 0 vulnerabilities found</span>
+</div>
+<!-- Log Line 6 -->
+<div class="flex items-start gap-2 text-on-surface-variant">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:22.010]</span>
+<span class="text-secondary-fixed-dim shrink-0 font-bold">[AST:START]</span>
+<span>Initializing PySQL-01 AST Taint dialect analyzer on 7 routes</span>
+</div>
+<!-- Log Line 7 (CRITICAL FINDING) -->
+<div class="flex items-start gap-2 bg-primary-container/15 p-1 rounded border-l-2 border-primary-container text-white">
+<span class="text-on-surface-variant/60 shrink-0">[14:15:38.840]</span>
+<span class="text-primary shrink-0 font-bold">[FINDING:CRIT]</span>
+<span>AST Taint sink reached: cursor.execute at search.py:42 (CWE-89)</span>
+</div>
+<!-- Log Line 8 (WARNING) -->
+<div class="flex items-start gap-2 text-amber-300">
+<span class="text-on-surface-variant/40 shrink-0">[14:15:44.200]</span>
+<span class="text-amber-400 shrink-0 font-bold">[WARN]</span>
+<span>Route /admin/internal-metrics dropped: explicit whitelist exclusion</span>
+</div>
+<!-- Log Line 9 (PROVISIONAL FINDING) -->
+<div class="flex items-start gap-2 bg-amber-500/10 p-1 rounded border-l-2 border-amber-400 text-amber-200">
+<span class="text-on-surface-variant/60 shrink-0">[14:16:04.120]</span>
+<span class="text-amber-300 shrink-0 font-bold">[FINDING:PROV]</span>
+<span>Possible unescaped bio parameter reflected in /profile/bio</span>
+</div>
+<!-- Log Line 10 (LIVE IN PROGRESS) -->
+<div class="flex items-start gap-2 text-secondary animate-pulse">
+<span class="text-on-surface-variant/40 shrink-0">[14:16:18.990]</span>
+<span class="text-secondary shrink-0 font-bold">[AST:POLL]</span>
+<span>Stage 04 in progress: 4/7 endpoints verified... synthesizing graph</span>
+</div>
+<!-- Log Line 11 -->
+<div class="flex items-start gap-2 text-on-surface-variant/70">
+<span class="text-on-surface-variant/40 shrink-0">[14:16:21.004]</span>
+<span class="text-on-surface-variant shrink-0 font-medium">[SANDBOX]</span>
+<span>eBPF probe egress counters: 0 dropped, 142 packets inspected</span>
+</div>
+<!-- Log Line 12 -->
+<div class="flex items-start gap-2 text-on-surface-variant/70">
+<span class="text-on-surface-variant/40 shrink-0">[14:16:24.410]</span>
+<span class="text-on-surface-variant shrink-0 font-medium">[RUNTIME]</span>
+<span>Heartbeat ACK received from worker daemon node-worker-04</span>
+</div>
+</div>
+<!-- Terminal Status Strip -->
+<div class="flex items-center justify-between text-label-code text-[10px] text-on-surface-variant/80 pt-1">
+<span class="flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Socket: wss://aegis-telemetry/stream/8092 (Connected)
+              </span>
+<span>Buffer: 120 / 5,000 lines</span>
+</div>
+</div>
+<!-- 2. Effective Scope & Safety Safeguards -->
+<div class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="policy">policy</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Effective Scope &amp; Safety Safeguards</h2>
+</div>
+<span class="text-label-badge font-label-badge text-emerald-400 text-[10px] px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30">
+                HARD LOCKED
+              </span>
+</div>
+<div class="space-y-3 font-label-code text-[12px]">
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant">Target Host</span>
+<span class="text-primary font-medium">college-placement-v2.1</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant">Network Boundary</span>
+<span class="text-secondary font-medium">Loopback 127.0.0.1:8001 Only</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant">Enforced Rate Limit</span>
+<span class="text-on-surface font-medium">Max 10 req/s · Strict</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant">Timeout Threshold</span>
+<span class="text-on-surface font-medium">2500ms max per probe</span>
+</div>
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<span class="text-on-surface-variant">Network Isolation</span>
+<span class="text-emerald-400 font-medium">eBPF Egress Blocked (All External)</span>
+</div>
+</div>
+<!-- Authorization Record Signature -->
+<div class="p-3 rounded bg-surface-container-lowest border border-outline-variant/40 space-y-1 text-label-code text-[11px]">
+<div class="text-on-surface-variant/80 flex items-center justify-between">
+<span>Authorization Signature:</span>
+<span class="text-emerald-400">VERIFIED</span>
+</div>
+<div class="text-on-surface truncate">
+                Signed by <strong class="text-primary">Analyst_442</strong> under ED25519 Token
+              </div>
+<div class="text-on-surface-variant/60 text-[10px] truncate">
+                Token: sha256:d894e77b02914bc8a834190c4bf4
+              </div>
+</div>
+</div>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- SECTION 4: CHECK-LEVEL RESULTS TABLE (8 Configured Checks)           -->
+<!-- ===================================================================== -->
+<section class="p-5 rounded-lg bg-surface-container-lowest border border-outline-variant/30 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 pb-3">
+<div>
+<h2 class="text-headline-sm font-headline-sm text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="table_chart">table_chart</span>
+              Check-Level Results Table
+            </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Comprehensive status of the 8 defensive checks configured for Assessment Profile SCN-8092.
+            </p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-code text-[11px] text-on-surface-variant">Summary:</span>
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px]">5 PASSED</span>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-badge font-bold text-[10px]">1 DETECTED</span>
+<span class="px-2 py-0.5 rounded bg-secondary/20 border border-secondary/40 text-secondary font-label-badge text-[10px]">1 RUNNING</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-badge text-[10px]">1 QUEUED</span>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left font-label-code text-[12px] border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 text-on-surface-variant/80 text-[11px] uppercase tracking-wider">
+<th class="py-2.5 px-3">Check Name</th>
+<th class="py-2.5 px-3">Category</th>
+<th class="py-2.5 px-3">Status Badge</th>
+<th class="py-2.5 px-3">Duration</th>
+<th class="py-2.5 px-3">Findings Yield</th>
+<th class="py-2.5 px-3">Target Endpoint</th>
+<th class="py-2.5 px-3 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1: SQL Injection AST (Finding Detected) -->
+<tr class="hover:bg-surface-container-low transition-colors bg-primary-container/5">
+<td class="py-3 px-3 font-medium text-white flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                  SQL Injection AST Taint Analyzer
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Code / AST Taint</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-badge font-bold text-[10px] uppercase">
+                    Findings Detected
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface">36.2s</td>
+<td class="py-3 px-3 text-primary font-bold">1 Critical (CWE-89)</td>
+<td class="py-3 px-3 text-primary-fixed-dim">/api/v1/students/search</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container-high hover:bg-primary-container hover:text-white transition-all text-[11px]">
+                    Inspect
+                  </button>
+</td>
+</tr>
+<!-- Row 2: Cross-Site Scripting (Running) -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary pulse-cyan"></span>
+                  Cross-Site Scripting Fuzzer
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Dynamic Fuzzing</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-secondary/20 border border-secondary/40 text-secondary font-label-badge text-[10px] uppercase">
+                    Running
+                  </span>
+</td>
+<td class="py-3 px-3 text-secondary">22.4s (active)</td>
+<td class="py-3 px-3 text-amber-300">1 Provisional (CWE-79)</td>
+<td class="py-3 px-3 text-on-surface-variant">/profile/bio</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container-high hover:text-secondary transition-all text-[11px]">
+                    Stream
+                  </button>
+</td>
+</tr>
+<!-- Row 3: Input Validation -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Input Validation &amp; Type Coercion
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Pydantic Schema</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px] uppercase">
+                    Passed
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">142ms</td>
+<td class="py-3 px-3 text-emerald-400">0 Findings</td>
+<td class="py-3 px-3 text-on-surface-variant">7 Routes (All)</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:text-on-surface text-[11px]">
+                    Logs
+                  </button>
+</td>
+</tr>
+<!-- Row 4: HTTP Headers -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  HTTP Security Headers Audit
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Passive Compliance</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px] uppercase">
+                    Passed
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">64ms</td>
+<td class="py-3 px-3 text-emerald-400">0 Findings</td>
+<td class="py-3 px-3 text-on-surface-variant">Host Level</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:text-on-surface text-[11px]">
+                    Logs
+                  </button>
+</td>
+</tr>
+<!-- Row 5: Cookie Flags -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Cookie Flags &amp; Session Entropy
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Session Security</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px] uppercase">
+                    Passed
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">88ms</td>
+<td class="py-3 px-3 text-emerald-400">0 Findings</td>
+<td class="py-3 px-3 text-on-surface-variant">/auth/session</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:text-on-surface text-[11px]">
+                    Logs
+                  </button>
+</td>
+</tr>
+<!-- Row 6: CORS Isolation -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  CORS Origin Isolation Matrix
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Network Policy</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px] uppercase">
+                    Passed
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">95ms</td>
+<td class="py-3 px-3 text-emerald-400">0 Findings</td>
+<td class="py-3 px-3 text-on-surface-variant">Options Pre-flight</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:text-on-surface text-[11px]">
+                    Logs
+                  </button>
+</td>
+</tr>
+<!-- Row 7: SBOM Scanner -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  SBOM Dependency Vulnerability Scanner
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Supply Chain</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 font-label-badge text-[10px] uppercase">
+                    Passed
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">420ms</td>
+<td class="py-3 px-3 text-emerald-400">0 CVEs (42 pkgs)</td>
+<td class="py-3 px-3 text-on-surface-variant">requirements.txt</td>
+<td class="py-3 px-3 text-right">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:text-on-surface text-[11px]">
+                    SBOM
+                  </button>
+</td>
+</tr>
+<!-- Row 8: Container Audit (Queued) -->
+<tr class="hover:bg-surface-container-low transition-colors opacity-70">
+<td class="py-3 px-3 font-medium text-on-surface flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-on-surface-variant"></span>
+                  Container Image &amp; Runtime Hardening Audit
+                </td>
+<td class="py-3 px-3 text-on-surface-variant">Infrastructure</td>
+<td class="py-3 px-3">
+<span class="px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant/30 text-on-surface-variant font-label-badge text-[10px] uppercase">
+                    Queued
+                  </span>
+</td>
+<td class="py-3 px-3 text-on-surface-variant">Pending Stg 5</td>
+<td class="py-3 px-3 text-on-surface-variant">--</td>
+<td class="py-3 px-3 text-on-surface-variant">Dockerfile / Linux ns</td>
+<td class="py-3 px-3 text-right">
+<span class="text-on-surface-variant/50 text-[11px]">Wait</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<!-- ========================================================================= -->
+<!-- MOBILE BOTTOM NAV BAR (Mandatory Responsive Pivot for md:hidden)         -->
+<!-- ========================================================================= -->
+<nav class="fixed bottom-0 left-0 right-0 h-14 bg-surface-container-lowest/95 backdrop-blur-lg border-t border-outline-variant/30 z-50 flex items-center justify-around px-2 md:hidden select-none">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface py-1" href="#overview">
+<span class="material-symbols-outlined text-[20px]" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-label-code">Overview</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold py-1" href="#analyze">
+<span class="material-symbols-outlined text-[20px]" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="text-[10px] font-label-code">Analyze</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface py-1" href="#verify">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span class="text-[10px] font-label-code">Verify</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface py-1" href="#research">
+<span class="material-symbols-outlined text-[20px]" data-icon="biotech">biotech</span>
+<span class="text-[10px] font-label-code">Research</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:text-on-surface py-1" href="#system">
+<span class="material-symbols-outlined text-[20px]" data-icon="tune">tune</span>
+<span class="text-[10px] font-label-code">System</span>
+</a>
+</nav>
+</body></html>

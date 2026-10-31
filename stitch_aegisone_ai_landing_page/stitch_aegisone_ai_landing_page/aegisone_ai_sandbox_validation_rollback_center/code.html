@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AegisOne AI — Sandbox Validation &amp; Rollback Center</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-bright": "#39393c",
+            "on-tertiary-container": "#5b0012",
+            "secondary": "#65d4f6",
+            "on-surface-variant": "#e8bcb9",
+            "on-primary": "#68000e",
+            "tertiary-fixed-dim": "#ffb3b4",
+            "inverse-on-surface": "#303034",
+            "primary-fixed-dim": "#ffb3af",
+            "on-secondary-container": "#002e3a",
+            "surface-container-high": "#2a292d",
+            "tertiary-container": "#f65c67",
+            "outline-variant": "#5e3f3d",
+            "surface-dim": "#131316",
+            "primary-fixed": "#ffdad8",
+            "surface-tint": "#ffb3af",
+            "on-surface": "#e5e1e6",
+            "on-primary-container": "#5c000b",
+            "secondary-fixed": "#b3ebff",
+            "inverse-surface": "#e5e1e6",
+            "background": "#131316",
+            "error-container": "#93000a",
+            "tertiary": "#ffb3b4",
+            "on-secondary": "#003642",
+            "surface-container-highest": "#353438",
+            "on-tertiary-fixed-variant": "#8f0b25",
+            "surface-container-lowest": "#0e0e11",
+            "secondary-fixed-dim": "#65d4f6",
+            "tertiary-fixed": "#ffdad9",
+            "error": "#ffb4ab",
+            "primary-container": "#ff5357",
+            "surface-variant": "#353438",
+            "primary": "#ffb3af",
+            "on-secondary-fixed-variant": "#004e5f",
+            "on-primary-fixed": "#410006",
+            "on-error-container": "#ffdad6",
+            "surface-container": "#201f23",
+            "on-secondary-fixed": "#001f27",
+            "on-tertiary-fixed": "#40000a",
+            "outline": "#af8785",
+            "surface-container-low": "#1b1b1f",
+            "secondary-container": "#139ebd",
+            "on-background": "#e5e1e6",
+            "on-primary-fixed-variant": "#930019",
+            "on-tertiary": "#680016",
+            "on-error": "#690005",
+            "inverse-primary": "#bf0024",
+            "surface": "#131316"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1.25rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "margin": "3rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "label-badge": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-hero": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "display-hero-mobile": ["Space Grotesk"],
+            "label-code": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "label-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-code": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 1.15rem;
+    }
+    .tactical-glow {
+      box-shadow: 0 0 25px rgba(255, 83, 87, 0.12);
+    }
+    .tactical-scan-line {
+      background: linear-gradient(180deg, rgba(255, 83, 87, 0) 0%, rgba(255, 83, 87, 0.08) 50%, rgba(255, 83, 87, 0) 100%);
+    }
+    /* Custom scrollbar for high density terminal */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0e0e11;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #353438;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff5357;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md min-h-screen selection:bg-primary-container selection:text-on-primary">
+<!-- ============================================================== -->
+<!-- 1. LEFT SIDEBAR (Shared Component: SideNavBar)                  -->
+<!-- ============================================================== -->
+<aside class="fixed top-0 left-0 h-screen w-64 border-r border-outline-variant/30 bg-surface-container-lowest flex flex-col justify-between p-space-md z-40 select-none">
+<!-- Header Block -->
+<div>
+<div class="flex items-center gap-3 px-space-xs mb-space-lg">
+<div class="w-9 h-9 rounded bg-surface-container-high border border-primary-container/40 flex items-center justify-center text-primary-container shadow-[0_0_12px_rgba(255,83,87,0.3)]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary">AegisOne AI</span>
+<span class="text-label-badge font-label-badge text-outline text-[10px] tracking-widest">DEFENSE KERNEL v4.2</span>
+</div>
+</div>
+<!-- Navigation Hierarchy -->
+<nav class="space-y-4">
+<!-- Group: Overview -->
+<div>
+<div class="text-[10px] uppercase font-label-badge text-outline tracking-widest px-3 mb-1.5 opacity-70">Overview</div>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2.5 py-1.5 text-on-surface-variant hover:text-on-surface pl-3 hover:bg-surface-container-high/40 hover:text-primary-fixed-dim transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[17px]">dashboard</span>
+<span class="text-label-code font-label-code text-xs">Overview</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- Group: Analyze -->
+<div>
+<div class="text-[10px] uppercase font-label-badge text-outline tracking-widest px-3 mb-1.5 opacity-70">Analyze</div>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2.5 py-1.5 text-on-surface-variant hover:text-on-surface pl-3 hover:bg-surface-container-high/40 hover:text-primary-fixed-dim transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[17px]">security</span>
+<span class="text-label-code font-label-code text-xs">Analyze</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- Group: Verify (ACTIVE) -->
+<div>
+<div class="text-[10px] uppercase font-label-badge text-primary-container tracking-widest px-3 mb-1.5 flex items-center justify-between">
+<span>Verify</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+</div>
+<ul class="space-y-0.5">
+<li>
+<!-- Exact match active tab from JSON: 'Verify' -->
+<a class="flex items-center gap-2.5 py-1.5 border-l-2 border-primary-container text-primary font-bold bg-surface-container-low/40 pl-3 rounded-r transition-all duration-150 shadow-[inset_1px_0_10px_rgba(255,83,87,0.08)]" href="#">
+<span class="material-symbols-outlined text-[17px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-label-code font-label-code text-xs text-primary">Verify</span>
+<span class="ml-auto text-[9px] font-label-badge bg-primary-container/20 text-primary px-1.5 py-0.5 rounded border border-primary-container/30">SANDBOX</span>
+</a>
+</li>
+</ul>
+</div>
+<!-- Group: Research & System -->
+<div>
+<div class="text-[10px] uppercase font-label-badge text-outline tracking-widest px-3 mb-1.5 opacity-70">Investigation</div>
+<ul class="space-y-0.5">
+<li>
+<a class="flex items-center gap-2.5 py-1.5 text-on-surface-variant hover:text-on-surface pl-3 hover:bg-surface-container-high/40 hover:text-primary-fixed-dim transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[17px]">biotech</span>
+<span class="text-label-code font-label-code text-xs">Research</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-2.5 py-1.5 text-on-surface-variant hover:text-on-surface pl-3 hover:bg-surface-container-high/40 hover:text-primary-fixed-dim transition-colors duration-150 rounded" href="#">
+<span class="material-symbols-outlined text-[17px]">tune</span>
+<span class="text-label-code font-label-code text-xs">System</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+</div>
+<!-- Sidebar Footer & Scope Guard Widget -->
+<div class="space-y-3">
+<!-- Guard State Banner -->
+<div class="p-2.5 rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col gap-1.5">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container shadow-[0_0_8px_#ff5357]"></span>
+<span class="text-[11px] font-label-badge text-primary uppercase font-bold tracking-wider">SCOPE GUARD: ARMED</span>
+</div>
+<p class="text-[10px] font-label-code text-on-surface-variant/80 truncate">college-placement-v2.1</p>
+<span class="text-[9px] font-body-sm text-outline">Strict Whitelist Enforced</span>
+</div>
+<!-- Footer Tabs from JSON -->
+<div class="pt-2 border-t border-outline-variant/20 flex items-center justify-between text-outline px-1">
+<a class="flex items-center gap-1 hover:text-on-surface text-[11px] font-label-code transition-colors" href="#" title="Docs">
+<span class="material-symbols-outlined text-sm">description</span>
+<span>Docs</span>
+</a>
+<a class="flex items-center gap-1 hover:text-on-surface text-[11px] font-label-code transition-colors" href="#" title="Terminal">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>Terminal</span>
+</a>
+<a class="flex items-center gap-1 hover:text-on-surface text-[11px] font-label-code transition-colors" href="#" title="Settings">
+<span class="material-symbols-outlined text-sm">settings</span>
+<span>Settings</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- ============================================================== -->
+<!-- 2. TOP DENSE TACTICAL BAR (Shared Component: TopNavBar)         -->
+<!-- ============================================================== -->
+<header class="docked full-width top-0 pl-64 fixed left-0 right-0 z-30 bg-surface-container-lowest/80 backdrop-blur-md border-b border-outline-variant/30 h-14">
+<div class="flex justify-between items-center w-full px-space-lg h-full">
+<!-- Left Anchor & Scope Search -->
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm font-bold tracking-tight text-primary">AegisOne AI Ops</span>
+<span class="text-[10px] font-label-badge bg-surface-container-high px-1.5 py-0.5 rounded text-outline-variant border border-outline-variant/30 uppercase">DEMO FIXTURE</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant/40"></div>
+<!-- Search / Active Cluster Indicator -->
+<div class="flex items-center gap-2 bg-surface-container-low px-2.5 py-1 rounded border border-outline-variant/30 text-on-surface-variant text-xs">
+<span class="material-symbols-outlined text-[15px] text-outline">search</span>
+<span class="font-label-code text-on-surface">College Placement Portal</span>
+<span class="text-[10px] font-label-badge text-secondary bg-secondary/10 px-1 py-0.2 rounded border border-secondary/20">http://localhost:8001</span>
+</div>
+</div>
+<!-- Center Telemetry Badges (From JSON navigation_links) -->
+<div class="hidden lg:flex items-center gap-5 text-label-code text-xs">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>PROD-CLUSTER-01</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-xs text-outline">public</span>
+<span>US-EAST-VA</span>
+</div>
+<div class="flex items-center gap-1.5 text-primary border-b border-primary font-semibold py-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+<span>SYS-LATENCY 14ms</span>
+</div>
+</div>
+<!-- Trailing Action Controls -->
+<div class="flex items-center gap-3">
+<!-- Secondary Action -->
+<button class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-surface-container text-xs font-label-code text-on-surface hover:bg-surface-container-high/50 border border-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>EXPORT TELEMETRY</span>
+</button>
+<!-- Primary Action -->
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-primary-container hover:bg-primary-container/90 text-on-primary-container text-xs font-headline-sm font-bold tracking-tight shadow-[0_0_14px_rgba(255,83,87,0.35)] transition-all">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span>TRIGGER SCAN</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/40 mx-1"></div>
+<!-- Trailing Icons from JSON -->
+<div class="flex items-center gap-1 text-on-surface-variant">
+<button class="p-1.5 hover:text-primary transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined text-[19px]">notifications_active</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</button>
+<button class="p-1.5 hover:text-primary transition-colors" title="Sensors">
+<span class="material-symbols-outlined text-[19px]">sensors</span>
+</button>
+<button class="p-1.5 hover:text-primary transition-colors ml-1" title="Account">
+<span class="material-symbols-outlined text-[22px]">account_circle</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- ============================================================== -->
+<!-- 3. MAIN WORKSPACE CANVAS                                       -->
+<!-- ============================================================== -->
+<main class="pl-64 pt-14 min-h-screen flex flex-col bg-background">
+<div class="p-space-lg max-w-[1520px] w-full mx-auto space-y-5">
+<!-- ============================================================ -->
+<!-- SECTION 1: HEADER & OPERATIONAL STATUS                       -->
+<!-- ============================================================ -->
+<section class="border border-outline-variant/30 rounded bg-surface-container-lowest p-space-md relative overflow-hidden">
+<!-- Sub-surface tactical gradient light -->
+<div class="absolute -right-20 -top-24 w-96 h-96 rounded-full bg-primary-container/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -left-12 -bottom-16 w-64 h-64 rounded-full bg-secondary/5 blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+<div class="space-y-1.5">
+<div class="flex items-center gap-2">
+<span class="text-label-badge font-label-badge text-primary-fixed-dim text-[11px] tracking-wider uppercase">
+                ISOLATED VERIFICATION ENGINE · AUTOMATED RECOVERY · DETERMINISTIC SANDBOX DAEMON v4.2
+              </span>
+<span class="px-1.5 py-0.2 text-[9px] font-label-badge bg-primary-container/20 text-primary border border-primary-container/30 rounded">SEC_ZONE_0</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+              Sandbox Validation &amp; Rollback Center
+            </h1>
+<p class="text-body-sm font-body-sm text-outline max-w-3xl leading-relaxed">
+              Test proposed security fixes in isolated container runtimes, detect regressions, verify AST taint neutralization, and execute automated rollback when candidates fail validation.
+            </p>
+<!-- Live Status Badges -->
+<div class="pt-2 flex flex-wrap items-center gap-2 text-label-code text-xs">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container border border-outline-variant/30 text-on-surface">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                ACTIVE SANDBOX: <strong class="text-secondary font-semibold">sandbox-worker-04 [WARM]</strong>
+</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container border border-outline-variant/30 text-on-surface">
+<span class="material-symbols-outlined text-[14px] text-tertiary-container">progress_activity</span>
+                STATE: <strong class="text-primary font-semibold">STAGE 4 DYNAMIC PROBE</strong>
+</span>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-surface-container border border-primary-container/40 text-primary font-medium">
+<span class="material-symbols-outlined text-[14px] text-primary">history</span>
+                ROLLBACK READY: <span class="font-label-badge text-primary">240ms SNAPSHOT PRIMED</span>
+</span>
+</div>
+</div>
+<!-- Direct Execution Controls -->
+<div class="flex flex-wrap xl:flex-col items-stretch justify-center gap-2 min-w-[210px]">
+<button class="px-3.5 py-2 rounded bg-primary-container hover:bg-primary-container/90 text-on-primary-container font-headline-sm text-xs font-bold tracking-tight shadow-[0_0_15px_rgba(255,83,87,0.3)] flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+              Run Safe Validation
+            </button>
+<button class="px-3.5 py-2 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant/40 text-on-surface font-body-sm text-xs flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-sm text-primary">gavel</span>
+              Demonstrate Unsafe Fix Rejection
+            </button>
+<button class="px-3.5 py-1.5 text-center text-outline hover:text-on-surface font-label-code text-[11px] flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-xs">history_edu</span>
+              View Validation History
+            </button>
+</div>
+</div>
+</section>
+<!-- ============================================================ -->
+<!-- SECTION 2: TOP OPERATIONAL SUMMARY METRICS (5 Bento Cards)   -->
+<!-- ============================================================ -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+<!-- Metric Card 1 -->
+<div class="p-3.5 rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center justify-between text-outline text-[11px] font-label-badge uppercase">
+<span>Active Sandbox</span>
+<span class="material-symbols-outlined text-secondary text-sm">developer_board</span>
+</div>
+<div class="my-2">
+<div class="text-headline-sm font-headline-sm text-on-surface tracking-tight">sandbox-worker-04</div>
+<div class="text-[11px] font-label-code text-secondary mt-0.5">Isolated Docker gVisor</div>
+</div>
+<div class="text-[10px] font-label-code text-outline flex items-center justify-between border-t border-outline-variant/20 pt-1.5">
+<span>Mem: 512MB / 1.0 CPU</span>
+<span class="text-secondary">Loopback Only</span>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="p-3.5 rounded bg-surface-container-lowest border border-primary-container/40 flex flex-col justify-between tactical-glow">
+<div class="flex items-center justify-between text-primary-fixed-dim text-[11px] font-label-badge uppercase">
+<span>Validation Stage</span>
+<span class="material-symbols-outlined text-primary text-sm animate-spin">refresh</span>
+</div>
+<div class="my-2">
+<div class="text-headline-sm font-headline-sm text-primary tracking-tight">Stage 4 / 4</div>
+<div class="text-[11px] font-label-code text-on-surface-variant mt-0.5">Dynamic Security Re-Scan</div>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-primary-container h-full w-[88%]"></div>
+</div>
+<div class="text-[10px] font-label-code text-outline flex justify-between mt-1">
+<span>SQLMap Synthetic Fuzz</span>
+<span class="text-primary font-bold">88% Complete</span>
+</div>
+</div>
+<!-- Metric Card 3 -->
+<div class="p-3.5 rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center justify-between text-outline text-[11px] font-label-badge uppercase">
+<span>Functional &amp; Regression</span>
+<span class="material-symbols-outlined text-secondary text-sm">fact_check</span>
+</div>
+<div class="my-2">
+<div class="text-headline-sm font-headline-sm text-on-surface tracking-tight">18 / 18 PASSED</div>
+<div class="text-[11px] font-label-code text-secondary mt-0.5">Unit: 12/12 · Functional: 6/6</div>
+</div>
+<div class="text-[10px] font-label-code text-outline flex items-center justify-between border-t border-outline-variant/20 pt-1.5">
+<span>0 Failures</span>
+<span class="text-on-surface font-semibold">310ms Runtime</span>
+</div>
+</div>
+<!-- Metric Card 4 -->
+<div class="p-3.5 rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center justify-between text-outline text-[11px] font-label-badge uppercase">
+<span>Re-Scan Sinks</span>
+<span class="material-symbols-outlined text-primary text-sm">shield_with_heart</span>
+</div>
+<div class="my-2">
+<div class="text-headline-sm font-headline-sm text-on-surface tracking-tight">0 Sinks Detected</div>
+<div class="text-[11px] font-label-code text-secondary mt-0.5">CWE-89 AST Neutralized</div>
+</div>
+<div class="text-[10px] font-label-code text-outline flex items-center justify-between border-t border-outline-variant/20 pt-1.5">
+<span>0 New Weaknesses</span>
+<span class="text-secondary font-semibold">94.2% Coverage</span>
+</div>
+</div>
+<!-- Metric Card 5 -->
+<div class="p-3.5 rounded bg-surface-container-lowest border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center justify-between text-outline text-[11px] font-label-badge uppercase">
+<span>Recovery &amp; Rollback</span>
+<span class="material-symbols-outlined text-tertiary-container text-sm">published_with_changes</span>
+</div>
+<div class="my-2">
+<div class="text-headline-sm font-headline-sm text-on-surface tracking-tight">SNAPSHOT ARMED</div>
+<div class="text-[11px] font-label-code text-outline truncate mt-0.5">sha256:d894e771c99...</div>
+</div>
+<div class="text-[10px] font-label-code text-outline flex items-center justify-between border-t border-outline-variant/20 pt-1.5">
+<span>Verified Rollback</span>
+<span class="text-primary font-bold">240ms Target</span>
+</div>
+</div>
+</section>
+<!-- ============================================================ -->
+<!-- SECTION 3: VALIDATION LIFECYCLE PIPELINE (4 Stages)          -->
+<!-- ============================================================ -->
+<section class="p-4 rounded bg-surface-container-lowest border border-outline-variant/30">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">linear_scale</span>
+<span class="text-xs font-label-badge uppercase tracking-wider text-on-surface">Deterministic Verification Pipeline Sequence</span>
+</div>
+<span class="text-[11px] font-label-code text-outline">Candidate: <strong class="text-on-surface font-semibold">#P-8902</strong> (Parameterized SQL Query)</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-3 relative">
+<!-- Stage 1 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-label-badge text-outline">STAGE 01</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-label-badge text-secondary bg-secondary/10 px-1.5 py-0.5 rounded border border-secondary/20">
+<span class="material-symbols-outlined text-[11px]">check_circle</span> PASSED
+                </span>
+</div>
+<div class="text-xs font-headline-sm font-bold text-on-surface">Prep &amp; Scope Check</div>
+<p class="text-[11px] font-body-sm text-outline mt-1 leading-snug">
+                Isolated gVisor runtime created. Clean baseline snapshot locked.
+              </p>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 text-[10px] font-label-code text-outline flex justify-between">
+<span>Duration: 42ms</span>
+<span class="text-on-surface">sha:d894e77</span>
+</div>
+</div>
+<!-- Stage 2 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-label-badge text-outline">STAGE 02</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-label-badge text-secondary bg-secondary/10 px-1.5 py-0.5 rounded border border-secondary/20">
+<span class="material-symbols-outlined text-[11px]">check_circle</span> PASSED
+                </span>
+</div>
+<div class="text-xs font-headline-sm font-bold text-on-surface">Syntax &amp; Regressions</div>
+<p class="text-[11px] font-body-sm text-outline mt-1 leading-snug">
+                Python AST parser clean. 18/18 PyTest functional cases passed.
+              </p>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 text-[10px] font-label-code text-outline flex justify-between">
+<span>Duration: 310ms</span>
+<span class="text-on-surface">PySQL-01 dialect</span>
+</div>
+</div>
+<!-- Stage 3 -->
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-label-badge text-outline">STAGE 03</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-label-badge text-secondary bg-secondary/10 px-1.5 py-0.5 rounded border border-secondary/20">
+<span class="material-symbols-outlined text-[11px]">check_circle</span> PASSED
+                </span>
+</div>
+<div class="text-xs font-headline-sm font-bold text-on-surface">Static AST Security</div>
+<p class="text-[11px] font-body-sm text-outline mt-1 leading-snug">
+                Taint sink #9042 absent. Zero unverified AST side-effects identified.
+              </p>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/20 text-[10px] font-label-code text-outline flex justify-between">
+<span>Duration: 185ms</span>
+<span class="text-on-surface">0 Taint Paths</span>
+</div>
+</div>
+<!-- Stage 4 (Active) -->
+<div class="p-3 rounded bg-surface-container-low border border-primary-container flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-6 -bottom-6 w-20 h-20 rounded-full bg-primary-container/20 blur-xl"></div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-label-badge text-primary-container font-bold">STAGE 04 · FINAL</span>
+<span class="inline-flex items-center gap-1 text-[10px] font-label-badge text-primary bg-primary-container/20 px-1.5 py-0.5 rounded border border-primary-container/30">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span> EXECUTING
+                </span>
+</div>
+<div class="text-xs font-headline-sm font-bold text-primary">Dynamic Security Re-Scan</div>
+<p class="text-[11px] font-body-sm text-on-surface-variant mt-1 leading-snug">
+                SQLMap synthetic payload probe testing candidate runtime injection resilience.
+              </p>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/30 text-[10px] font-label-code text-outline flex justify-between items-center">
+<span class="text-primary font-semibold">Elapsed: 620ms</span>
+<span class="text-on-surface">Probe: 44/50</span>
+</div>
+</div>
+</div>
+</section>
+<!-- ============================================================ -->
+<!-- SECTION 4: MULTI-PANEL DESKTOP WORKSPACE (3 Columns)         -->
+<!-- ============================================================ -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+<!-- ============================================================ -->
+<!-- COLUMN 1: CANDIDATE & SANDBOX SELECTOR (~260px / 3 cols)     -->
+<!-- ============================================================ -->
+<div class="lg:col-span-3 space-y-4">
+<!-- Active Candidate Card -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-label-badge text-primary uppercase font-bold tracking-wider">Candidate Under Test</span>
+<span class="text-[10px] font-label-code px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface border border-outline-variant/30">v2.1</span>
+</div>
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-sm font-headline-sm text-on-surface">#P-8902</span>
+<span class="text-xs font-label-code text-secondary font-medium">CWE-89 Remediation</span>
+</div>
+<p class="text-xs font-body-sm text-outline mt-0.5">
+                Target: <span class="font-label-code text-on-surface">/api/v1/students/search.py:42</span>
+</p>
+</div>
+<!-- Risk reduction comparison -->
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between">
+<div>
+<div class="text-[10px] font-label-badge text-outline uppercase">Pre-Fix Risk</div>
+<div class="text-xs font-label-code text-primary font-bold">8.6 / 10 (HIGH)</div>
+</div>
+<span class="material-symbols-outlined text-outline text-sm">arrow_forward</span>
+<div class="text-right">
+<div class="text-[10px] font-label-badge text-outline uppercase">Post-Fix Projected</div>
+<div class="text-xs font-label-code text-secondary font-bold">1.2 / 10 (LOW)</div>
+</div>
+</div>
+<!-- Pre-Validation Checklist -->
+<div class="space-y-1.5 pt-1">
+<div class="text-[10px] font-label-badge text-outline uppercase tracking-wider">Container Verification Gates</div>
+<div class="flex items-center justify-between text-[11px] font-label-code text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-secondary">check_circle</span>
+                  Scope Whitelist Valid
+                </span>
+<span class="text-secondary text-[10px]">VERIFIED</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-label-code text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-secondary">check_circle</span>
+                  Taint Sink Neutralized
+                </span>
+<span class="text-secondary text-[10px]">VERIFIED</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-label-code text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-secondary">check_circle</span>
+                  Regression Tests (18/18)
+                </span>
+<span class="text-secondary text-[10px]">PASSED</span>
+</div>
+<div class="flex items-center justify-between text-[11px] font-label-code text-on-surface-variant">
+<span class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-primary animate-pulse">pending</span>
+                  SQLMap Synthetic Probe
+                </span>
+<span class="text-primary text-[10px]">IN PROGRESS</span>
+</div>
+</div>
+</div>
+<!-- Candidate Version History -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-label-badge text-outline uppercase tracking-wider">Candidate Iterations</span>
+<span class="text-[10px] font-label-code text-outline">3 items</span>
+</div>
+<!-- Item 1: Selected -->
+<div class="p-2 rounded bg-surface-container-low border border-primary-container/40 relative">
+<div class="flex items-center justify-between">
+<span class="text-xs font-label-code font-bold text-on-surface">#P-8902 (v2 · Parameterized)</span>
+<span class="text-[9px] font-label-badge bg-primary-container/20 text-primary px-1 py-0.2 rounded border border-primary-container/30">ACTIVE</span>
+</div>
+<p class="text-[11px] font-body-sm text-outline mt-1">Direct query parameterization via SQLAlchemy driver bindings.</p>
+<div class="text-[10px] font-label-code text-secondary mt-1">Stage 4 in progress</div>
+</div>
+<!-- Item 2: Rejected (demonstrates automated rollback) -->
+<div class="p-2 rounded bg-surface-container-low border border-error-container/30 opacity-80">
+<div class="flex items-center justify-between">
+<span class="text-xs font-label-code font-semibold text-error">#P-8901 (v1 · ORM Raw Escaping)</span>
+<span class="text-[9px] font-label-badge bg-error-container/20 text-error px-1 py-0.2 rounded border border-error-container/40">REJECTED</span>
+</div>
+<p class="text-[11px] font-body-sm text-outline mt-1">Regression detected: ORM connection pool lockup in Stage 2.</p>
+<div class="text-[10px] font-label-code text-primary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">replay</span>
+                240ms Auto-Rollback Executed
+              </div>
+</div>
+<!-- Item 3: Historical Validated -->
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 opacity-60">
+<div class="flex items-center justify-between">
+<span class="text-xs font-label-code text-on-surface">#P-7911 (XSS DOMPurify)</span>
+<span class="text-[9px] font-label-badge bg-secondary/10 text-secondary px-1 py-0.2 rounded">MERGED</span>
+</div>
+<div class="text-[10px] font-label-code text-outline mt-1">Validated 2h ago · 0 regressions</div>
+</div>
+</div>
+<!-- Container Isolation Telemetry -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3 space-y-2 text-xs font-label-code">
+<div class="flex items-center gap-1.5 text-outline text-[11px] font-label-badge uppercase">
+<span class="material-symbols-outlined text-xs text-secondary">memory</span>
+              Sandbox Isolation Specs
+            </div>
+<div class="text-[11px] text-on-surface-variant space-y-1">
+<div class="flex justify-between">
+<span class="text-outline">Runtime Engine:</span>
+<span class="text-on-surface">gVisor runsc (sandboxed syscall)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">PID Isolation:</span>
+<span class="text-secondary">Strict (chroot + seccomp)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Network Egress:</span>
+<span class="text-primary font-semibold">BLOCKED (Loopback Only)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Ephemeral Storage:</span>
+<span class="text-on-surface">2.0 GB tmpfs (Non-persistent)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================================ -->
+<!-- COLUMN 2: TERMINAL LOGS & VALIDATION TABLE (6 cols)          -->
+<!-- ============================================================ -->
+<div class="lg:col-span-6 space-y-4">
+<!-- Validation Stream Container with Tabs -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 overflow-hidden flex flex-col">
+<!-- Terminal Header & Tab Bar -->
+<div class="bg-surface-container-low px-3 py-2 border-b border-outline-variant/30 flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-1 text-xs font-label-code">
+<button class="px-2.5 py-1 rounded bg-surface-container text-primary font-semibold border-b-2 border-primary flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                  Live Execution Stream
+                </button>
+<button class="px-2.5 py-1 text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1">
+                  Regression Tests (18/18)
+                </button>
+<button class="px-2.5 py-1 text-on-surface-variant hover:text-on-surface transition-colors">
+                  Re-Scan Diff
+                </button>
+</div>
+<!-- Terminal Controls -->
+<div class="flex items-center gap-2 text-outline text-[11px] font-label-code">
+<span class="inline-flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-[13px]">tune</span>
+                  AUTO-SCROLL ON
+                </span>
+<button class="hover:text-on-surface p-1" title="Copy Log Buffer">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+<button class="hover:text-on-surface p-1" title="Clear Console">
+<span class="material-symbols-outlined text-[14px]">block</span>
+</button>
+</div>
+</div>
+<!-- Filter Pills Bar -->
+<div class="px-3 py-1.5 bg-surface-container-lowest border-b border-outline-variant/20 flex items-center gap-2 text-[10px] font-label-badge overflow-x-auto">
+<span class="text-outline uppercase">Filter:</span>
+<button class="px-1.5 py-0.5 rounded bg-surface-container text-on-surface border border-outline-variant/40">ALL EVENTS (48)</button>
+<button class="px-1.5 py-0.5 rounded text-outline hover:text-on-surface">EXECUTION</button>
+<button class="px-1.5 py-0.5 rounded text-secondary bg-secondary/10 border border-secondary/20">PYTEST (18)</button>
+<button class="px-1.5 py-0.5 rounded text-primary bg-primary-container/10 border border-primary-container/30">SECURITY SCAN</button>
+<button class="px-1.5 py-0.5 rounded text-outline hover:text-on-surface">ROLLBACK ENGINE</button>
+</div>
+<!-- Terminal Output Window (High density Dark Terminal) -->
+<div class="p-3 bg-surface-container-lowest font-label-code text-[11px] leading-relaxed space-y-1.5 h-64 overflow-y-auto selection:bg-primary-container/40">
+<div class="text-outline flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.012Z]</span>
+<span class="text-secondary">[INIT]</span>
+<span>Spawning container runtime: gVisor runsc sandbox-worker-04 ... OK</span>
+</div>
+<div class="text-outline flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.054Z]</span>
+<span class="text-secondary">[SNAPSHOT]</span>
+<span>Baseline capture: sha256:d894e771c990b7a8 (Commit: college-placement-v2.1@head)</span>
+</div>
+<div class="text-outline flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.096Z]</span>
+<span class="text-secondary">[DIFF]</span>
+<span>Applying proposed patch #P-8902 to /api/v1/students/search.py (+8 -4 lines)</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.210Z]</span>
+<span class="text-on-surface">[STAGE 01]</span>
+<span>Scope verification check: file strictly bounded within Whitelist Scope: VALID</span>
+</div>
+<div class="text-on-surface-variant flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.405Z]</span>
+<span class="text-secondary">[STAGE 02]</span>
+<span>Running PyTest regression suite (18 items): pytest tests/test_student_search.py</span>
+</div>
+<div class="text-outline pl-8 text-[10px] space-y-0.5">
+<span class="text-secondary block">.... tests/test_student_search.py::test_empty_query PASSED [ 5%]</span>
+<span class="text-secondary block">.... tests/test_student_search.py::test_filter_by_department PASSED [22%]</span>
+<span class="text-secondary block">.... tests/test_student_search.py::test_utf8_name_handling PASSED [50%]</span>
+<span class="text-secondary block">.... tests/test_student_search.py::test_pagination_offsets PASSED [77%]</span>
+<span class="text-secondary block">.... tests/test_student_search.py::test_connection_pool_under_burst PASSED [100%]</span>
+</div>
+<div class="text-secondary flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.715Z]</span>
+<span class="text-secondary">[STAGE 02]</span>
+<span>PyTest finished in 310ms: 18 passed, 0 failed, 0 warnings. REGRESSION CLEAR.</span>
+</div>
+<div class="text-on-surface flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:01.900Z]</span>
+<span class="text-on-surface">[STAGE 03]</span>
+<span>Static AST Semantic Re-Taint: evaluating AST node &lt;FunctionDef: get_students_by_keyword&gt;</span>
+</div>
+<div class="text-secondary flex items-start gap-2">
+<span class="text-outline/60 select-none">[14:32:02.085Z]</span>
+<span class="text-secondary">[AST SINK]</span>
+<span>Sink verification: cursor.execute(text(:query), {"query": param}) detected. String interpolation removed.</span>
+</div>
+<div class="text-primary flex items-start gap-2 font-medium">
+<span class="text-outline/60 select-none">[14:32:02.320Z]</span>
+<span class="text-primary">[STAGE 04]</span>
+<span>Executing dynamic synthetic probe: sqlmap --batch -u "http://127.0.0.1:8001/api/v1/students/search?q=*" --level=3</span>
+</div>
+<div class="text-outline pl-8 text-[10px] space-y-0.5">
+<span class="block">Payload #1: <code class="text-on-surface-variant">' OR '1'='1</code> -&gt; HTTP 200 OK (0 injected records returned)</span>
+<span class="block">Payload #2: <code class="text-on-surface-variant">') UNION SELECT NULL, version(), NULL--</code> -&gt; HTTP 200 OK (Parameter bound safely)</span>
+<span class="text-primary block animate-pulse">Running heuristic boolean blind injection probe (44/50 completed)...</span>
+</div>
+</div>
+<!-- Terminal Status Strip -->
+<div class="p-2 bg-surface-container-low border-t border-outline-variant/30 flex items-center justify-between text-[11px] font-label-code">
+<span class="text-outline flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                Socket: <span class="text-on-surface">/var/run/aegis/sandbox-04.sock</span>
+</span>
+<span class="text-secondary">gVisor Sandbox: ACTIVE · PID: 80921</span>
+</div>
+</div>
+<!-- Security Re-Scan Before/After Comparison Table -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-2.5">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xs font-headline-sm font-bold text-on-surface">Security Re-Scan Before / After Audit Matrix</h3>
+<p class="text-[11px] font-body-sm text-outline">Deterministic diff verification between baseline state and proposed patch</p>
+</div>
+<span class="text-[10px] font-label-badge bg-secondary/10 text-secondary border border-secondary/20 px-2 py-0.5 rounded">
+                94.2% VERIFIED COVERAGE
+              </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-[11px] font-label-code border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 text-outline text-[10px] uppercase font-label-badge">
+<th class="py-1.5 px-2">Vulnerability / Sink</th>
+<th class="py-1.5 px-2">Before Candidate</th>
+<th class="py-1.5 px-2">After Candidate</th>
+<th class="py-1.5 px-2">Diff Impact</th>
+<th class="py-1.5 px-2 text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 text-on-surface-variant">
+<tr>
+<td class="py-2 px-2 font-medium text-on-surface">
+                      CWE-89 SQLi (search.py:42)
+                    </td>
+<td class="py-2 px-2 text-primary font-mono text-[10px]">
+                      Taint Sink Active (f-string)
+                    </td>
+<td class="py-2 px-2 text-secondary font-mono text-[10px]">
+                      Neutralized (Param Query)
+                    </td>
+<td class="py-2 px-2 text-outline">
+                      Sanitized AST
+                    </td>
+<td class="py-2 px-2 text-right">
+<span class="inline-flex items-center gap-1 text-[9px] font-label-badge bg-secondary/15 text-secondary px-1.5 py-0.5 rounded border border-secondary/30">
+<span class="material-symbols-outlined text-[10px]">check</span> RESOLVED
+                      </span>
+</td>
+</tr>
+<tr>
+<td class="py-2 px-2 font-medium text-on-surface">
+                      ORM Pool Deadlock
+                    </td>
+<td class="py-2 px-2 text-outline text-[10px]">
+                      None
+                    </td>
+<td class="py-2 px-2 text-secondary text-[10px]">
+                      Zero regression observed
+                    </td>
+<td class="py-2 px-2 text-outline">
+                      Concurrency stable
+                    </td>
+<td class="py-2 px-2 text-right">
+<span class="inline-flex items-center gap-1 text-[9px] font-label-badge bg-secondary/15 text-secondary px-1.5 py-0.5 rounded border border-secondary/30">
+<span class="material-symbols-outlined text-[10px]">check</span> PASSED
+                      </span>
+</td>
+</tr>
+<tr>
+<td class="py-2 px-2 font-medium text-on-surface">
+                      New Introduced Weaknesses
+                    </td>
+<td class="py-2 px-2 text-outline text-[10px]">
+                      None detected
+                    </td>
+<td class="py-2 px-2 text-secondary text-[10px]">
+                      0 introduced
+                    </td>
+<td class="py-2 px-2 text-outline">
+                      No side-effects
+                    </td>
+<td class="py-2 px-2 text-right">
+<span class="inline-flex items-center gap-1 text-[9px] font-label-badge bg-secondary/15 text-secondary px-1.5 py-0.5 rounded border border-secondary/30">
+<span class="material-symbols-outlined text-[10px]">shield</span> CLEAN
+                      </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Dynamic Action Toolbar -->
+<div class="pt-2 border-t border-outline-variant/30 flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1.5 rounded bg-primary-container text-on-primary-container text-xs font-headline-sm font-bold flex items-center gap-1 shadow-[0_0_10px_rgba(255,83,87,0.3)]">
+<span class="material-symbols-outlined text-xs">bolt</span>
+                  Execute Final Dynamic Probe
+                </button>
+<button class="px-2.5 py-1.5 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant/40 text-on-surface text-xs font-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-primary">fast_rewind</span>
+                  Trigger Controlled Rollback Test
+                </button>
+</div>
+<button class="text-xs font-label-code text-outline hover:text-on-surface flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">receipt_long</span>
+                Export Full Audit Bundle
+              </button>
+</div>
+</div>
+</div>
+<!-- ============================================================ -->
+<!-- COLUMN 3: DECISION LEDGER & ROLLBACK GUARANTEE (~320px)      -->
+<!-- ============================================================ -->
+<div class="lg:col-span-3 space-y-4">
+<!-- Mandatory Validation Gates Status -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-label-badge text-outline uppercase tracking-wider">Mandatory Gate Ledger</span>
+<span class="text-[10px] font-label-badge text-primary bg-primary-container/20 px-1.5 py-0.2 rounded border border-primary-container/30">3 OF 4 CLEARED</span>
+</div>
+<div class="space-y-2">
+<!-- Gate 1 -->
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between text-xs">
+<div>
+<div class="font-headline-sm font-semibold text-on-surface">Gate 1: AST Syntax &amp; Lint</div>
+<div class="text-[10px] font-label-code text-outline">Python 3.11 Grammar validated</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-base">check_circle</span>
+</div>
+<!-- Gate 2 -->
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between text-xs">
+<div>
+<div class="font-headline-sm font-semibold text-on-surface">Gate 2: 18/18 PyTest Cases</div>
+<div class="text-[10px] font-label-code text-outline">Regression &amp; functional passed</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-base">check_circle</span>
+</div>
+<!-- Gate 3 -->
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 flex items-center justify-between text-xs">
+<div>
+<div class="font-headline-sm font-semibold text-on-surface">Gate 3: Taint Neutralization</div>
+<div class="text-[10px] font-label-code text-outline">AST sink #9042 verified absent</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-base">check_circle</span>
+</div>
+<!-- Gate 4 -->
+<div class="p-2 rounded bg-surface-container-low border border-primary-container/40 flex items-center justify-between text-xs tactical-glow">
+<div>
+<div class="font-headline-sm font-bold text-primary">Gate 4: Dynamic SQLi Probe</div>
+<div class="text-[10px] font-label-code text-on-surface-variant">Synthetic SQLMap Probe (88%)</div>
+</div>
+<span class="material-symbols-outlined text-primary text-base animate-spin">sync</span>
+</div>
+</div>
+</div>
+<!-- Automated Rollback & Recovery Engine Card -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-2.5">
+<div class="flex items-center gap-2 text-primary font-label-badge text-[11px] uppercase font-bold tracking-wider">
+<span class="material-symbols-outlined text-base">history</span>
+              Deterministic Rollback Guarantee
+            </div>
+<p class="text-xs font-body-sm text-outline leading-relaxed">
+              Any test regression or newly introduced AST defect triggers immediate container termination, restoring the baseline commit within <strong>240ms</strong>.
+            </p>
+<!-- Case Study: Rejected candidate #P-8901 -->
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant/20 space-y-1.5">
+<div class="flex items-center justify-between text-[10px] font-label-badge">
+<span class="text-primary font-bold">CASE STUDY: CANDIDATE #P-8901</span>
+<span class="text-outline">FAILED IN STAGE 2</span>
+</div>
+<p class="text-[11px] font-body-sm text-on-surface-variant">
+                Unsafe ORM patch caused connection pool exhaustion. AegisOne aborted deployment in <strong class="text-primary">238ms</strong> with zero production impact.
+              </p>
+<div class="text-[10px] font-label-code text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-secondary">verified</span>
+                Verified Rollback Log #RB-4109
+              </div>
+</div>
+</div>
+<!-- Final Decision Handoff Card -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3.5 space-y-3">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-label-badge text-outline uppercase tracking-wider">Decision Handoff</span>
+<span class="text-[10px] font-label-badge text-outline bg-surface-container px-1.5 py-0.5 rounded">STATUS</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/20 text-center">
+<span class="text-xs font-label-code text-primary font-bold">AWAITING FINAL GATE CLEARANCE</span>
+<div class="text-[10px] font-body-sm text-outline mt-0.5">Stage 4 probe must conclude at 100%</div>
+</div>
+<div class="space-y-2">
+<!-- Disabled / Locked Accept CTA -->
+<button class="w-full py-2 rounded bg-surface-container-high text-outline cursor-not-allowed font-headline-sm text-xs font-semibold flex items-center justify-center gap-1.5 border border-outline-variant/20" disabled="">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Accept &amp; Merge Candidate Fix
+              </button>
+<!-- Secondary Force Abort CTA -->
+<button class="w-full py-2 rounded bg-surface-container hover:bg-surface-container-high text-error font-headline-sm text-xs font-semibold flex items-center justify-center gap-1.5 border border-error-container/40 transition-colors">
+<span class="material-symbols-outlined text-sm">cancel</span>
+                Force Abort &amp; Purge Sandbox
+              </button>
+</div>
+</div>
+<!-- Cryptographic Proof & Ledger Box -->
+<div class="rounded bg-surface-container-lowest border border-outline-variant/30 p-3 space-y-1.5 text-[10px] font-label-code text-outline">
+<div class="flex justify-between">
+<span>Verification Run ID:</span>
+<span class="text-on-surface">VR-2025-0518-8902</span>
+</div>
+<div class="flex justify-between">
+<span>Operator Signature:</span>
+<span class="text-on-surface">Analyst_442 (ED25519)</span>
+</div>
+<div class="flex justify-between">
+<span>Deterministic Hash:</span>
+<span class="text-secondary truncate ml-2">sha256:7bc9029a1...</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Lightweight Inline Micro-Interactions Script -->
+<script>
+    // Micro-interaction for demo execution buttons
+    document.addEventListener('DOMContentLoaded', () => {
+      const runBtn = document.querySelector('button:has(.material-symbols-outlined)');
+      if (runBtn) {
+        runBtn.addEventListener('click', () => {
+          console.log('[AegisOne Kernel] Verification dispatch acknowledged.');
+        });
+      }
+    });
+  </script>
+</body></html>

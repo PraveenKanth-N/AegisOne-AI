@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AegisOne AI — Security Knowledge Graph Explorer</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface-variant": "#e8bcb9",
+            "tertiary-fixed": "#ffdad9",
+            "on-primary-container": "#5c000b",
+            "tertiary-container": "#f65c67",
+            "background": "#131316",
+            "surface-bright": "#39393c",
+            "on-error-container": "#ffdad6",
+            "outline": "#af8785",
+            "secondary": "#65d4f6",
+            "on-tertiary-fixed-variant": "#8f0b25",
+            "on-secondary-fixed-variant": "#004e5f",
+            "primary-container": "#ff5357",
+            "on-error": "#690005",
+            "primary-fixed": "#ffdad8",
+            "on-surface": "#e5e1e6",
+            "surface-container-high": "#2a292d",
+            "on-tertiary-container": "#5b0012",
+            "outline-variant": "#5e3f3d",
+            "tertiary-fixed-dim": "#ffb3b4",
+            "primary": "#ffb3af",
+            "surface-container-highest": "#353438",
+            "surface-variant": "#353438",
+            "on-primary-fixed": "#410006",
+            "secondary-fixed-dim": "#65d4f6",
+            "surface": "#131316",
+            "error-container": "#93000a",
+            "inverse-surface": "#e5e1e6",
+            "on-secondary-fixed": "#001f27",
+            "error": "#ffb4ab",
+            "surface-container": "#201f23",
+            "surface-tint": "#ffb3af",
+            "secondary-container": "#139ebd",
+            "inverse-on-surface": "#303034",
+            "on-primary-fixed-variant": "#930019",
+            "on-tertiary-fixed": "#40000a",
+            "primary-fixed-dim": "#ffb3af",
+            "secondary-fixed": "#b3ebff",
+            "inverse-primary": "#bf0024",
+            "surface-container-lowest": "#0e0e11",
+            "on-background": "#e5e1e6",
+            "surface-dim": "#131316",
+            "on-tertiary": "#680016",
+            "tertiary": "#ffb3b4",
+            "on-secondary": "#003642",
+            "surface-container-low": "#1b1b1f",
+            "on-secondary-container": "#002e3a",
+            "on-primary": "#68000e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "margin-mobile": "1.25rem",
+            "gutter": "1.5rem",
+            "margin": "3rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "display-hero": ["Space Grotesk"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-xl": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "headline-xl-mobile": ["Space Grotesk"],
+            "label-badge": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk"],
+            "body-md": ["Inter"],
+            "display-hero-mobile": ["Space Grotesk"],
+            "label-code": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "display-hero": ["56px", { "lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-badge": ["11px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "display-hero-mobile": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-code": ["13px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-graph-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(94, 63, 61, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(94, 63, 61, 0.15) 1px, transparent 1px);
+    }
+    .radar-pulse {
+      animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 12px rgba(255, 83, 87, 0.6)); }
+      50% { opacity: 0.35; filter: drop-shadow(0 0 4px rgba(255, 83, 87, 0.2)); }
+    }
+    /* Custom scrollbar for dark tactical UI */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: #0e0e11; }
+    ::-webkit-scrollbar-thumb { background: #5e3f3d; border-radius: 2px; }
+  </style>
+</head>
+<body class="bg-[#08080B] text-on-surface antialiased font-body-md min-h-screen overflow-x-hidden selection:bg-primary-container selection:text-white flex">
+<!-- ========================================================================= -->
+<!-- 1. PERSISTENT APPLICATION SHELL: SIDEBAR NAVIGATION                      -->
+<!-- Authority: Shared Components JSON & Style Guidance                        -->
+<!-- ========================================================================= -->
+<aside class="fixed top-0 left-0 h-screen w-64 border-r border-outline-variant/30 bg-surface-container-lowest flex flex-col justify-between p-space-md z-40">
+<!-- Top Branding & Navigation Group -->
+<div class="flex flex-col gap-6">
+<!-- Header Shield Vector & Title -->
+<div class="flex items-center gap-3 px-1 pt-1">
+<div class="w-9 h-9 rounded bg-surface-container-high border border-primary-container/40 flex items-center justify-center relative shadow-[0_0_12px_rgba(255,83,87,0.25)]">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">shield</span>
+<div class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-secondary animate-ping"></div>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary">AegisOne AI</span>
+<span class="text-[10px] font-label-code text-on-surface-variant/70 tracking-widest leading-none mt-0.5">DEFENSE KERNEL v4.2</span>
+</div>
+</div>
+<!-- Navigation Hierarchy -->
+<nav class="flex flex-col gap-5 overflow-y-auto pr-1">
+<!-- GROUP 1: OVERVIEW -->
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-label-code uppercase tracking-wider text-outline px-3 mb-1">OVERVIEW</span>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">inventory_2</span>
+<span>App Inventory</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">timeline</span>
+<span>Scan Timeline</span>
+</a>
+</div>
+<!-- GROUP 2: ANALYZE (CONTAINS ACTIVE PAGE) -->
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-label-code uppercase tracking-wider text-outline px-3 mb-1">ANALYZE</span>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">security</span>
+<span>Vulnerability Findings</span>
+</a>
+<!-- ACTIVE ITEM: Security Knowledge Graph -->
+<a class="flex items-center gap-2.5 border-l-2 border-primary-container text-primary font-bold bg-surface-container-low/40 pl-3 py-1.5 rounded-r transition-all text-label-code shadow-[inset_4px_0_12px_rgba(255,83,87,0.12)]" href="#">
+<span class="material-symbols-outlined text-base text-primary-container" style="font-variation-settings: 'FILL' 1;">hub</span>
+<span>Security Knowledge Graph</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">smart_toy</span>
+<span>AI Security Analyst</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">science</span>
+<span>Remediation Lab</span>
+</a>
+</div>
+<!-- GROUP 3: VERIFY -->
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-label-code uppercase tracking-wider text-outline px-3 mb-1">VERIFY</span>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">verified_user</span>
+<span>Verify</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">difference</span>
+<span>Compare AST</span>
+</a>
+</div>
+<!-- GROUP 4: RESEARCH & SYSTEM -->
+<div class="flex flex-col gap-1">
+<span class="text-[10px] font-label-code uppercase tracking-wider text-outline px-3 mb-1">RESEARCH &amp; SYSTEM</span>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">biotech</span>
+<span>Research</span>
+</a>
+<a class="flex items-center gap-2.5 text-on-surface-variant hover:text-on-surface pl-3 py-1.5 rounded transition-colors text-label-code hover:bg-surface-container-high/40" href="#">
+<span class="material-symbols-outlined text-base">tune</span>
+<span>System</span>
+</a>
+</div>
+</nav>
+</div>
+<!-- Bottom Scope Guard Widget & Sub-Footers -->
+<div class="flex flex-col gap-3 pt-4 border-t border-outline-variant/30">
+<!-- Guard Widget -->
+<div class="p-2.5 rounded bg-surface-container-low border border-primary-container/30 relative overflow-hidden">
+<div class="flex items-center justify-between mb-1.5">
+<span class="text-[10px] font-label-badge text-primary-container flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-pulse"></span>
+            SCOPE GUARD: ARMED
+          </span>
+<span class="material-symbols-outlined text-primary-container text-xs">lock</span>
+</div>
+<div class="text-[11px] font-label-code text-on-surface font-semibold truncate">college-placement-v2.1</div>
+<div class="text-[9px] font-label-code text-on-surface-variant/70 mt-0.5">Strict Whitelist Enforced</div>
+</div>
+<!-- Sub-footer Links -->
+<div class="flex items-center justify-between px-1 text-on-surface-variant/70 text-label-code text-[11px]">
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-xs">description</span>Docs
+        </a>
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-xs">terminal</span>Terminal
+        </a>
+<a class="hover:text-primary transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-xs">settings</span>Settings
+        </a>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE CANVAS CONTAINER (OFFSET BY SIDEBAR w-64)                   -->
+<!-- ========================================================================= -->
+<div class="flex-1 pl-64 flex flex-col min-w-0 bg-[#08080B]">
+<!-- ========================================================================= -->
+<!-- 2. TOP UTILITY APP BAR (dense tactical)                                  -->
+<!-- ========================================================================= -->
+<header class="h-14 border-b border-outline-variant/30 bg-surface-container-lowest/80 backdrop-blur-md px-space-lg flex justify-between items-center sticky top-0 z-30">
+<!-- Left Target Context Cluster -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-high/60 border border-outline-variant/40">
+<span class="material-symbols-outlined text-secondary text-sm">deployed_code</span>
+<span class="text-label-code text-xs text-on-surface font-semibold">College Placement Portal · Local Lab</span>
+</div>
+<span class="text-[10px] font-label-badge bg-surface-container-highest px-2 py-0.5 rounded text-secondary border border-secondary/30">
+          DEMO FIXTURE
+        </span>
+<div class="flex items-center gap-1.5 text-xs font-label-code text-on-surface-variant/80">
+<span class="text-outline">::</span>
+<span class="text-on-surface-variant">http://localhost:8001</span>
+</div>
+<div class="flex items-center gap-1 text-[11px] font-label-code text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span>SYS-LATENCY 14ms · Online</span>
+</div>
+</div>
+<!-- Right CTAs & User Signature -->
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 rounded text-xs font-label-code font-bold bg-transparent text-secondary border border-secondary/40 hover:bg-secondary/10 hover:border-secondary transition-all flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">file_download</span>
+<span>EXPORT TELEMETRY</span>
+</button>
+<button class="px-3.5 py-1.5 rounded text-xs font-headline-sm font-bold bg-[#F20D32] text-white hover:bg-[#ff3b59] transition-all shadow-[0_0_16px_rgba(242,13,50,0.4)] flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">bolt</span>
+<span>TRIGGER SCAN</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/50 mx-1"></div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-high transition-colors relative">
+<span class="material-symbols-outlined text-lg">notifications_active</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-on-surface rounded hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-lg">sensors</span>
+</button>
+<div class="w-7 h-7 rounded bg-surface-container-high border border-outline-variant/60 flex items-center justify-center text-xs font-label-code text-primary font-bold ml-1">
+            OP
+          </div>
+</div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 3. PAGE HEADER & GRAPH TELEMETRY SUMMARY BAR                             -->
+<!-- ========================================================================= -->
+<div class="border-b border-outline-variant/30 bg-[#0D0E13] px-space-lg py-3 flex flex-col gap-3">
+<!-- Breadcrumb / Eyebrow & Title Row -->
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[10px] font-label-badge bg-secondary/10 text-secondary border border-secondary/30 px-2 py-0.5 rounded tracking-wider uppercase">
+              CONTEXTUAL SECURITY INTELLIGENCE · GRAPH SNAPSHOT #GS-2025-0518
+            </span>
+<span class="text-[10px] font-label-badge bg-primary-container/10 text-primary-container border border-primary-container/30 px-2 py-0.5 rounded">
+              DEMONSTRATION GRAPH FIXTURE · NOT LIVE DATA
+            </span>
+</div>
+<h1 class="text-headline-md font-headline-md text-on-surface font-bold tracking-tight">Security Knowledge Graph</h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant/80 mt-0.5">
+            Explore how application assets, security findings, evidence, and remediation controls are connected across verified taint flows.
+          </p>
+</div>
+<!-- Preset View Switcher Pills -->
+<div class="flex items-center gap-1.5 bg-[#08080B] p-1 rounded border border-outline-variant/40">
+<button class="px-2.5 py-1 rounded text-xs font-label-code bg-primary-container/20 border border-primary-container text-white font-medium shadow-sm">
+            Critical Taint Neighborhood
+          </button>
+<button class="px-2.5 py-1 rounded text-xs font-label-code text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors">
+            Exposed Attack Surface
+          </button>
+<button class="px-2.5 py-1 rounded text-xs font-label-code text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors">
+            Sensitive Data Paths
+          </button>
+<button class="px-2.5 py-1 rounded text-xs font-label-code text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/40 transition-colors">
+            Remediation Map
+          </button>
+</div>
+</div>
+<!-- Telemetry Data Strip -->
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/20 text-xs font-label-code">
+<div class="flex items-center gap-6 text-on-surface-variant/90">
+<div class="flex items-center gap-1.5">
+<span class="text-outline">Active Target:</span>
+<span class="text-white font-semibold">college-placement-v2.1</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-outline">Graph Engine:</span>
+<span class="text-secondary">Neo4j Cypher 5.14 · Deterministic Fixture</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-outline">Metrics:</span>
+<span class="text-on-surface font-medium">24 Nodes</span>
+<span class="text-outline">/</span>
+<span class="text-on-surface font-medium">38 Relationships</span>
+<span class="text-outline">/</span>
+<span class="text-primary-container font-semibold">14 Visible</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 text-[11px] text-on-surface-variant hover:text-primary transition-colors px-2 py-0.5 rounded border border-outline-variant/30 bg-surface-container-low">
+<span class="material-symbols-outlined text-xs">center_focus_strong</span> Focus on Finding
+          </button>
+<button class="flex items-center gap-1 text-[11px] text-on-surface-variant hover:text-secondary transition-colors px-2 py-0.5 rounded border border-outline-variant/30 bg-surface-container-low">
+<span class="material-symbols-outlined text-xs">route</span> Trace Risk Path
+          </button>
+<button class="flex items-center gap-1 text-[11px] text-on-surface-variant hover:text-on-surface transition-colors px-2 py-0.5 rounded border border-outline-variant/30 bg-surface-container-low">
+<span class="material-symbols-outlined text-xs">restart_alt</span> Reset Layout
+          </button>
+</div>
+</div>
+</div>
+<!-- ========================================================================= -->
+<!-- 4. WORKSPACE MAIN THREE-COLUMN GRAPH ARCHITECTURE                          -->
+<!-- ========================================================================= -->
+<div class="flex-1 flex overflow-hidden min-h-[580px]">
+<!-- ======================================================================= -->
+<!-- COLUMN 1: GRAPH FILTERS & NODE LEGEND (w-72)                            -->
+<!-- ======================================================================= -->
+<aside class="w-72 bg-[#0D0E13] border-r border-outline-variant/30 p-4 flex flex-col gap-4 overflow-y-auto shrink-0 select-none">
+<!-- Search Input with Keyboard Badge -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-sm">search</span>
+<input class="w-full bg-[#08080B] border border-outline-variant/40 rounded py-1.5 pl-8 pr-10 text-xs font-label-code text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container transition-colors" placeholder="Search nodes, CWE, AST..." type="text"/>
+<span class="absolute right-2 top-2 text-[10px] font-label-badge bg-surface-container-high text-outline px-1.5 py-0.5 rounded border border-outline-variant/30">
+            ⌘K
+          </span>
+</div>
+<!-- Node Types Filter Checkboxes -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-[11px] font-label-code font-bold uppercase tracking-wider text-outline">Node Entity Classes</span>
+<span class="text-[10px] font-label-badge text-secondary hover:underline cursor-pointer">Select All</span>
+</div>
+<div class="flex flex-col gap-1.5 text-xs font-label-code">
+<!-- 1. Security Findings -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-primary-container focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rotate-45 bg-[#F20D32] inline-block shadow-[0_0_6px_rgba(242,13,50,0.6)]"></span>
+<span class="text-on-surface">Security Findings</span>
+</div>
+<span class="text-[11px] font-label-badge text-primary-container font-semibold">04</span>
+</label>
+<!-- 2. Application Assets -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-secondary focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-sm bg-secondary inline-block"></span>
+<span class="text-on-surface">Application Assets</span>
+</div>
+<span class="text-[11px] font-label-badge text-secondary font-semibold">06</span>
+</label>
+<!-- 3. Evidence Artifacts -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-secondary-container focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-full bg-[#55C7E8] inline-block shadow-[0_0_6px_rgba(85,199,232,0.5)]"></span>
+<span class="text-on-surface">Evidence Artifacts</span>
+</div>
+<span class="text-[11px] font-label-badge text-[#55C7E8] font-semibold">05</span>
+</label>
+<!-- 4. CWE / Weakness -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-purple-400 focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-sm bg-purple-400 inline-block"></span>
+<span class="text-on-surface">CWE / Weakness</span>
+</div>
+<span class="text-[11px] font-label-badge text-purple-400 font-semibold">03</span>
+</label>
+<!-- 5. Security Controls -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-emerald-400 focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-sm bg-[#45D49A] inline-block shadow-[0_0_6px_rgba(69,212,154,0.5)]"></span>
+<span class="text-on-surface">Security Controls</span>
+</div>
+<span class="text-[11px] font-label-badge text-[#45D49A] font-semibold">03</span>
+</label>
+<!-- 6. Remediation Actions -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-amber-400 focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-sm bg-[#FFB84D] inline-block"></span>
+<span class="text-on-surface">Remediation Actions</span>
+</div>
+<span class="text-[11px] font-label-badge text-[#FFB84D] font-semibold">03</span>
+</label>
+<!-- 7. Sensitive Data & Risk -->
+<label class="flex items-center justify-between p-1.5 rounded hover:bg-surface-container-high/40 cursor-pointer">
+<div class="flex items-center gap-2">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-yellow-500 focus:ring-0 focus:ring-offset-0 h-3.5 w-3.5" type="checkbox"/>
+<span class="w-2.5 h-2.5 rounded-full bg-yellow-400 inline-block"></span>
+<span class="text-on-surface">Sensitive Data / PII</span>
+</div>
+<span class="text-[11px] font-label-badge text-yellow-400 font-semibold">02</span>
+</label>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<!-- Relationship Filters (Edge Types) -->
+<div class="flex flex-col gap-2">
+<span class="text-[11px] font-label-code font-bold uppercase tracking-wider text-outline">Active Edge Semantics</span>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-[#F20D32]/50 text-white flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-[#F20D32]"></span> affects
+            </span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-secondary/40 text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> observed_at
+            </span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-amber-500/40 text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> accesses
+            </span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-emerald-500/40 text-on-surface flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> mitigates
+            </span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-outline-variant/40 text-outline flex items-center gap-1">
+              remediates_to
+            </span>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-badge bg-surface-container border border-outline-variant/40 text-outline flex items-center gap-1">
+              contains_pii
+            </span>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<!-- Verification State Filter -->
+<div class="flex flex-col gap-2">
+<span class="text-[11px] font-label-code font-bold uppercase tracking-wider text-outline">Verification State</span>
+<div class="flex flex-col gap-1 text-xs font-label-code">
+<label class="flex items-center gap-2 cursor-pointer text-on-surface">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-primary-container focus:ring-0 h-3.5 w-3.5" type="checkbox"/>
+<span>Confirmed (Deterministic AST)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer text-on-surface">
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-secondary focus:ring-0 h-3.5 w-3.5" type="checkbox"/>
+<span>Inferred (Static Analysis)</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer text-outline">
+<input class="rounded border-outline-variant/50 bg-[#08080B] text-outline focus:ring-0 h-3.5 w-3.5" type="checkbox"/>
+<span>Hypothesized (Heuristic)</span>
+</label>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<!-- Graph Depth Slider & Controls -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between text-xs font-label-code">
+<span class="text-outline">Neighborhood Depth</span>
+<span class="text-primary-container font-bold">2 Hops (Max 4)</span>
+</div>
+<input class="w-full h-1 bg-surface-container-high rounded appearance-none cursor-pointer accent-[#F20D32]" max="4" min="1" type="range" value="2"/>
+<label class="flex items-center justify-between pt-1 cursor-pointer">
+<span class="text-xs font-label-code text-on-surface-variant">Hide Unconnected Nodes</span>
+<input checked="" class="rounded border-outline-variant/50 bg-[#08080B] text-primary-container focus:ring-0 h-3.5 w-3.5" type="checkbox"/>
+</label>
+</div>
+<!-- Saved Graph Preset Badge -->
+<div class="mt-auto pt-3 border-t border-outline-variant/30">
+<div class="p-2 bg-[#08080B] rounded border border-outline-variant/30 flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-xs">bookmark</span>
+<span class="text-[11px] font-label-code text-on-surface">SQLi Breach Vector</span>
+</div>
+<span class="text-[9px] font-label-badge bg-primary-container/20 text-primary-container px-1.5 py-0.2 rounded font-semibold uppercase">ACTIVE</span>
+</div>
+</div>
+</aside>
+<!-- ======================================================================= -->
+<!-- COLUMN 2: INTERACTIVE GRAPH CANVAS (Dominant 58% Central Workspace)    -->
+<!-- ======================================================================= -->
+<main class="flex-1 bg-[#08080B] relative overflow-hidden flex flex-col custom-graph-grid">
+<!-- Canvas Floating Controls Toolbar -->
+<div class="absolute top-4 left-4 z-20 flex items-center gap-1 bg-[#0D0E13]/90 backdrop-blur border border-outline-variant/40 rounded p-1 shadow-lg">
+<button class="p-1.5 text-on-surface-variant hover:text-white rounded hover:bg-surface-container-high transition-colors" title="Pan Canvas">
+<span class="material-symbols-outlined text-base">pan_tool</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/30 mx-0.5"></div>
+<button class="p-1.5 text-on-surface-variant hover:text-white rounded hover:bg-surface-container-high transition-colors" title="Zoom In">
+<span class="material-symbols-outlined text-base">zoom_in</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-white rounded hover:bg-surface-container-high transition-colors" title="Zoom Out">
+<span class="material-symbols-outlined text-base">zoom_out</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-white rounded hover:bg-surface-container-high transition-colors" title="Fit to Viewport">
+<span class="material-symbols-outlined text-base">fit_screen</span>
+</button>
+<button class="p-1.5 text-primary hover:text-white rounded hover:bg-surface-container-high transition-colors" title="Center Focus">
+<span class="material-symbols-outlined text-base">my_location</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant/30 mx-0.5"></div>
+<button class="px-2 py-1 text-[11px] font-label-code text-secondary flex items-center gap-1 rounded hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-xs">alt_route</span> Hierarchical DAG
+          </button>
+<button class="px-2 py-1 text-[11px] font-label-code text-on-surface-variant hover:text-white rounded hover:bg-surface-container-high">
+            Physics: On
+          </button>
+</div>
+<!-- Ambient Volumetric Red Glow Background Behind Active Center -->
+<div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+<div class="w-[520px] h-[520px] rounded-full bg-radial from-[#F20D32]/12 to-transparent blur-3xl"></div>
+</div>
+<!-- Interactive SVG Canvas Layer (Vector Connectors and Nodes) -->
+<div class="flex-1 relative w-full h-full flex items-center justify-center p-6">
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<!-- Arrowhead markers -->
+<marker id="arrow-crimson" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="28" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#F20D32"></path>
+</marker>
+<marker id="arrow-cyan" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="28" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#55C7E8"></path>
+</marker>
+<marker id="arrow-amber" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="28" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#FFB84D"></path>
+</marker>
+<marker id="arrow-emerald" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="28" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#45D49A"></path>
+</marker>
+<marker id="arrow-violet" markerheight="6" markerwidth="6" orient="auto-start-reverse" refx="28" refy="5" viewbox="0 0 10 10">
+<path d="M 0 1 L 10 5 L 0 9 z" fill="#b084f6"></path>
+</marker>
+</defs>
+<!-- Vector Connector Lines -->
+<!-- Ingress Gateway -> Profile Endpoint -->
+<path d="M 140 180 C 190 180, 210 240, 270 240" fill="none" opacity="0.6" stroke="#8F90A0" stroke-dasharray="4,4" stroke-width="1.5"></path>
+<!-- Profile Endpoint -> SQL Injection Node -->
+<path class="filter drop-shadow-[0_0_8px_rgba(242,13,50,0.5)]" d="M 400 240 C 440 240, 460 300, 500 300" fill="none" marker-end="url(#arrow-crimson)" stroke="#F20D32" stroke-width="2.5"></path>
+<!-- AST Taint Evidence -> SQL Injection -->
+<path d="M 330 380 C 390 380, 440 330, 500 300" fill="none" marker-end="url(#arrow-cyan)" stroke="#55C7E8" stroke-width="2"></path>
+<!-- SQL Injection -> PostgreSQL Auth DB -->
+<path d="M 640 300 C 690 300, 710 230, 760 210" fill="none" marker-end="url(#arrow-amber)" stroke="#FFB84D" stroke-dasharray="5,4" stroke-width="2"></path>
+<!-- PostgreSQL Auth DB -> Student Records PII -->
+<path class="filter drop-shadow-[0_0_8px_rgba(242,13,50,0.6)]" d="M 870 210 C 900 210, 920 180, 950 170" fill="none" marker-end="url(#arrow-crimson)" stroke="#F20D32" stroke-dasharray="4,4" stroke-width="2.5"></path>
+<!-- SQL Injection -> OWASP Top 10 A03 -->
+<path d="M 570 270 C 570 200, 580 160, 600 130" fill="none" marker-end="url(#arrow-violet)" stroke="#b084f6" stroke-dasharray="3,3" stroke-width="1.5"></path>
+<!-- SQL Injection -> Control: Parameterized Query AST Guard -->
+<path d="M 600 330 C 630 370, 660 390, 700 400" fill="none" marker-end="url(#arrow-emerald)" stroke="#45D49A" stroke-width="2"></path>
+<!-- Control -> Patch Candidate #P-8902 -->
+<path d="M 830 410 C 860 410, 890 410, 920 410" fill="none" marker-end="url(#arrow-amber)" stroke="#FFB84D" stroke-width="1.5"></path>
+</svg>
+<!-- Interactive Node DOM Overlay -->
+<div class="relative w-full h-full">
+<!-- Node 8: Ingress Proxy Gateway (Port 443) -->
+<div class="absolute left-[30px] top-[150px] w-48 p-2.5 rounded bg-[#12131A] border border-outline-variant/50 shadow-md hover:border-white transition-all cursor-pointer group">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-surface-container-high text-on-surface-variant px-1.5 py-0.2 rounded uppercase">INGRESS</span>
+<span class="material-symbols-outlined text-outline text-xs">router</span>
+</div>
+<div class="text-xs font-label-code text-on-surface font-semibold truncate">Nginx Gateway Proxy</div>
+<div class="text-[10px] font-label-code text-outline mt-0.5">Port 443 · External Route</div>
+</div>
+<!-- Edge Label 1 (Proxies) -->
+<div class="absolute left-[195px] top-[195px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-outline-variant/40 text-[9px] font-label-badge text-outline">
+              exposed_through
+            </div>
+<!-- Node 1: Endpoint Asset -->
+<div class="absolute left-[240px] top-[215px] w-52 p-2.5 rounded bg-[#12131A] border border-secondary/40 shadow-md hover:border-secondary transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-secondary/15 text-secondary px-1.5 py-0.2 rounded uppercase">APP ASSET</span>
+<span class="material-symbols-outlined text-secondary text-xs">code</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold truncate">/api/v1/auth/profile.py:42</div>
+<div class="text-[10px] font-label-code text-on-surface-variant/80 mt-0.5">FastAPI Controller · def get_profile</div>
+</div>
+<!-- Edge Label 2 (affects) -->
+<div class="absolute left-[425px] top-[255px] px-2 py-0.5 rounded bg-[#F20D32]/20 border border-[#F20D32]/60 text-[9px] font-label-badge text-[#ff8088] font-bold shadow-sm">
+              affects (taint)
+            </div>
+<!-- Node 4: AST Taint Trace Evidence Artifact -->
+<div class="absolute left-[200px] top-[355px] w-56 p-2.5 rounded bg-[#12131A] border border-[#55C7E8]/50 shadow-md hover:border-[#55C7E8] transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-[#55C7E8]/15 text-[#55C7E8] px-1.5 py-0.2 rounded uppercase">EVIDENCE ARTIFACT</span>
+<span class="material-symbols-outlined text-[#55C7E8] text-xs">travel_explore</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold truncate">AST Taint Trace #9042</div>
+<div class="text-[10px] font-label-code text-on-surface-variant/70 mt-0.5">Source: req.params.student_id</div>
+</div>
+<!-- Edge Label 4 (observed_at) -->
+<div class="absolute left-[400px] top-[345px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-[#55C7E8]/40 text-[9px] font-label-badge text-[#55C7E8]">
+              observed_at
+            </div>
+<!-- =================================================================== -->
+<!-- CENTRAL HIGHLIGHTED NODE: SQL INJECTION FINDING (#FND-8902)        -->
+<!-- =================================================================== -->
+<div class="absolute left-[450px] top-[260px] w-64 p-3.5 rounded-lg bg-[#191A22] border-2 border-[#F20D32] shadow-[0_0_28px_rgba(242,13,50,0.45)] ring-2 ring-[#F20D32]/30 cursor-pointer z-10 transition-transform hover:scale-[1.02]">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-[#F20D32] animate-ping"></span>
+<span class="text-[10px] font-label-badge bg-[#F20D32]/25 text-[#ffb4ab] border border-[#F20D32] px-2 py-0.5 rounded uppercase font-bold">
+                    SECURITY FINDING · CRITICAL
+                  </span>
+</div>
+<span class="text-[10px] font-label-badge text-white font-mono bg-primary-container px-1 rounded">8.6</span>
+</div>
+<div class="text-sm font-headline-sm text-white font-bold tracking-tight">
+                CWE-89: SQL Injection
+              </div>
+<div class="text-[11px] font-label-code text-[#ffb3af] font-semibold mt-0.5">
+                #FND-8902 · UserProfileQuery
+              </div>
+<div class="mt-2 pt-2 border-t border-outline-variant/40 flex items-center justify-between text-[10px] font-label-code text-on-surface-variant">
+<span>Deterministic AST Flow</span>
+<span class="text-[#45D49A] flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs">verified</span> Confirmed
+                </span>
+</div>
+</div>
+<!-- Node 5: OWASP Classification -->
+<div class="absolute left-[540px] top-[80px] w-52 p-2 rounded bg-[#12131A] border border-purple-500/40 shadow-sm hover:border-purple-400 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-purple-500/15 text-purple-300 px-1.5 py-0.2 rounded uppercase">WEAKNESS / TAXONOMY</span>
+<span class="material-symbols-outlined text-purple-400 text-xs">account_tree</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold">OWASP A03:2021</div>
+<div class="text-[10px] font-label-code text-outline">Injection Class Category</div>
+</div>
+<!-- Edge Label 5 (classified_as) -->
+<div class="absolute left-[585px] top-[190px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-purple-500/30 text-[9px] font-label-badge text-purple-300">
+              classifies
+            </div>
+<!-- Edge Label 2 (accesses: direct taint) -->
+<div class="absolute left-[685px] top-[245px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-amber-500/40 text-[9px] font-label-badge text-amber-300">
+              accesses (taint)
+            </div>
+<!-- Node 2: Database Cylinder Asset -->
+<div class="absolute left-[725px] top-[170px] w-52 p-2.5 rounded bg-[#12131A] border border-amber-500/40 shadow-md hover:border-amber-400 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-amber-500/15 text-amber-300 px-1.5 py-0.2 rounded uppercase">DATA STORE</span>
+<span class="material-symbols-outlined text-amber-400 text-xs">database</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold truncate">PostgreSQL Auth DB</div>
+<div class="text-[10px] font-label-code text-amber-300/80 mt-0.5">Tier-1 Relational Datastore</div>
+</div>
+<!-- Edge Label 3 (stores) -->
+<div class="absolute left-[890px] top-[175px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-[#F20D32]/50 text-[9px] font-label-badge text-[#ff8088]">
+              stores
+            </div>
+<!-- Node 3: Sensitive Data & FERPA PII -->
+<div class="absolute left-[920px] top-[125px] w-56 p-2.5 rounded bg-[#191A22] border border-yellow-500/60 shadow-[0_0_16px_rgba(234,179,8,0.2)] hover:border-yellow-400 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-yellow-500/15 text-yellow-300 px-1.5 py-0.2 rounded uppercase">HIGH-VALUE ASSET</span>
+<span class="material-symbols-outlined text-yellow-400 text-xs">lock</span>
+</div>
+<div class="text-xs font-label-code text-white font-bold truncate">Student Records &amp; FERPA PII</div>
+<div class="text-[10px] font-label-code text-yellow-200/70 mt-0.5">SSN, Grades, Auth Tokens</div>
+</div>
+<!-- Edge Label 6 (mitigated_by) -->
+<div class="absolute left-[640px] top-[370px] px-1.5 py-0.5 rounded bg-[#0D0E13] border border-emerald-500/40 text-[9px] font-label-badge text-emerald-300">
+              mitigates
+            </div>
+<!-- Node 6: Parameterized Query AST Guard (Emerald Control) -->
+<div class="absolute left-[685px] top-[380px] w-52 p-2.5 rounded bg-[#12131A] border border-emerald-500/50 shadow-md hover:border-emerald-400 transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-emerald-500/15 text-emerald-300 px-1.5 py-0.2 rounded uppercase">SECURITY CONTROL</span>
+<span class="material-symbols-outlined text-emerald-400 text-xs">verified_user</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold truncate">Parameterized Query Guard</div>
+<div class="text-[10px] font-label-code text-emerald-300/80 mt-0.5">AST Compiler Guard Rule</div>
+</div>
+<!-- Node 7: Patch Candidate #P-8902 (Amber Remediation) -->
+<div class="absolute left-[905px] top-[380px] w-56 p-2.5 rounded bg-[#12131A] border border-[#FFB84D]/50 shadow-md hover:border-[#FFB84D] transition-all cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[9px] font-label-badge bg-[#FFB84D]/15 text-[#FFB84D] px-1.5 py-0.2 rounded uppercase">REMEDIATION ACTION</span>
+<span class="material-symbols-outlined text-[#FFB84D] text-xs">build</span>
+</div>
+<div class="text-xs font-label-code text-white font-semibold truncate">Patch Candidate #P-8902</div>
+<div class="text-[10px] font-label-code text-on-surface-variant mt-0.5">cursor.execute with %s bind</div>
+</div>
+</div>
+</div>
+<!-- Canvas Mini-map / Footnote Indicator -->
+<div class="absolute bottom-3 left-4 z-20 flex items-center gap-3 text-[10px] font-label-code text-outline bg-[#0D0E13]/80 px-2.5 py-1 rounded border border-outline-variant/30">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Graph Synchronized
+          </span>
+<span>·</span>
+<span>Taint Hop Length: 4 Hops</span>
+<span>·</span>
+<span>Canvas Scale: 100%</span>
+</div>
+</main>
+<!-- ======================================================================= -->
+<!-- COLUMN 3: SELECTED-NODE & RELATIONSHIP INSPECTOR (w-80)                -->
+<!-- ======================================================================= -->
+<aside class="w-80 bg-[#12131A] border-l border-outline-variant/30 p-4 flex flex-col gap-4 overflow-y-auto shrink-0">
+<!-- Entity Inspector Header -->
+<div class="flex flex-col gap-2 pb-3 border-b border-outline-variant/30">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-label-badge bg-primary-container/20 text-[#ffb4ab] border border-primary-container px-2 py-0.5 rounded uppercase font-bold tracking-wider">
+              SELECTED ENTITY
+            </span>
+<span class="text-xs font-label-code text-outline">ID: node_fnd_8902</span>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-white font-bold leading-tight">CWE-89: SQL Injection</h2>
+<div class="text-xs font-label-code text-secondary mt-0.5">UserProfileQuery · profile.py:42</div>
+</div>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-[10px] font-label-badge bg-surface-container-high text-on-surface px-2 py-0.5 rounded border border-outline-variant/30">
+              Type: Security Finding
+            </span>
+<span class="text-[10px] font-label-badge bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
+              CONFIRMED TAINT
+            </span>
+</div>
+</div>
+<!-- Contextual Risk Score Card -->
+<div class="p-3 rounded bg-[#191A22] border border-[#F20D32]/40 relative overflow-hidden">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-label-code text-outline">Graph Contextual Risk Score</span>
+<span class="text-sm font-label-badge text-white font-bold bg-[#F20D32] px-2 py-0.5 rounded shadow-[0_0_8px_rgba(242,13,50,0.6)]">
+              8.6 / 10
+            </span>
+</div>
+<div class="w-full bg-surface-container-high h-1.5 rounded overflow-hidden mb-2">
+<div class="bg-gradient-to-r from-amber-400 to-[#F20D32] h-full rounded" style="width: 86%;"></div>
+</div>
+<p class="text-[11px] font-body-sm text-on-surface-variant leading-relaxed">
+            Criticality elevated by <strong class="text-white">Tier-1 DB direct taint path</strong> coupled with unauthenticated <strong class="text-white">Ingress exposure</strong>.
+          </p>
+</div>
+<!-- Connected Graph Neighborhood -->
+<div class="flex flex-col gap-2">
+<span class="text-[11px] font-label-code font-bold uppercase tracking-wider text-outline">Connected Neighborhood</span>
+<div class="space-y-1.5 text-xs font-label-code">
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/30 flex items-center justify-between">
+<span class="text-on-surface-variant">Incoming Edges</span>
+<span class="font-bold text-white bg-surface-container px-1.5 py-0.2 rounded">2 (Ingress, Request)</span>
+</div>
+<div class="p-2 rounded bg-surface-container-low border border-outline-variant/30 flex items-center justify-between">
+<span class="text-on-surface-variant">Outgoing Edges</span>
+<span class="font-bold text-white bg-surface-container px-1.5 py-0.2 rounded">4 (Postgres, PII, MITRE, Patch)</span>
+</div>
+</div>
+</div>
+<!-- Selected Edge Details Inspection -->
+<div class="flex flex-col gap-2 pt-2 border-t border-outline-variant/30">
+<span class="text-[11px] font-label-code font-bold uppercase tracking-wider text-secondary">Active Hop Telemetry</span>
+<div class="p-2.5 rounded bg-[#08080B] border border-outline-variant/40 space-y-2 text-xs font-label-code">
+<div>
+<div class="text-[10px] text-outline uppercase tracking-wider">Hop Semantic</div>
+<div class="text-white font-semibold">SQLi --[accesses: direct taint]--&gt; PostgreSQL DB</div>
+</div>
+<div class="grid grid-cols-2 gap-2 pt-1 border-t border-outline-variant/20 text-[11px]">
+<div>
+<span class="text-outline block text-[9px] uppercase">Relationship ID</span>
+<span class="text-on-surface truncate block">rel_8902_db_01</span>
+</div>
+<div>
+<span class="text-outline block text-[9px] uppercase">AST Engine</span>
+<span class="text-emerald-300">Deterministic</span>
+</div>
+<div class="col-span-2">
+<span class="text-outline block text-[9px] uppercase">Evidence Hash</span>
+<span class="text-on-surface-variant font-mono text-[10px] truncate block">sha256:d894e771c990b</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Panel Buttons -->
+<div class="flex flex-col gap-2 mt-auto pt-3 border-t border-outline-variant/30">
+<button class="w-full py-2 px-3 rounded text-xs font-headline-sm font-bold bg-[#F20D32] text-white hover:bg-[#ff3b59] transition-all flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(242,13,50,0.35)]">
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+<span>Open in Findings Explorer</span>
+</button>
+<button class="w-full py-2 px-3 rounded text-xs font-label-code font-semibold bg-transparent border border-secondary/40 text-secondary hover:bg-secondary/10 transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>Inspect Code Diff in Lab</span>
+</button>
+<button class="w-full py-1.5 px-3 rounded text-xs font-label-code text-on-surface-variant hover:text-white hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-sm">play_circle</span>
+<span>Run Sandbox Validation</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- ========================================================================= -->
+<!-- 5. BOTTOM REGION: TRACE RISK PATH & WHY THIS RELATIONSHIP MATTERS        -->
+<!-- Full-width analytical lower bar across center & right                    -->
+<!-- ========================================================================= -->
+<section class="border-t border-outline-variant/30 bg-[#0D0E13] p-4 flex flex-col gap-3 z-20">
+<!-- Section Title & Meta Action Strip -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container text-lg">route</span>
+<h3 class="text-sm font-headline-sm font-bold text-white tracking-tight">
+            Trace Risk Path: Ingress Exposure → SQL Injection → Sensitive Data Exfiltration
+          </h3>
+<span class="text-[10px] font-label-badge bg-primary-container/20 text-primary-container border border-primary-container/40 px-2 py-0.2 rounded font-semibold uppercase">
+            ACTIVE EXPLOIT PATH (5 HOPS)
+          </span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded text-xs font-label-code bg-surface-container border border-outline-variant/40 text-on-surface hover:text-white transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">content_copy</span> Copy Telemetry (JSON)
+          </button>
+<button class="px-2.5 py-1 rounded text-xs font-label-code bg-surface-container border border-secondary/40 text-secondary hover:bg-secondary/10 transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">highlight</span> Highlight Shortest Path
+          </button>
+<button class="px-2.5 py-1 rounded text-xs font-label-code bg-surface-container border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/10 transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">auto_fix_high</span> Simulate Decoupling
+          </button>
+</div>
+</div>
+<!-- Sequential 5-Step Hop Sequence Visualization -->
+<div class="grid grid-cols-5 gap-2 items-center text-xs font-label-code">
+<!-- Step 1: Ingress Gateway -->
+<div class="p-2.5 rounded bg-[#12131A] border border-outline-variant/40 relative">
+<div class="text-[9px] text-outline uppercase font-semibold">Step 01 · Ingress</div>
+<div class="text-white font-bold truncate mt-0.5">Ingress Gateway</div>
+<div class="text-[10px] text-on-surface-variant truncate">Port 443 (External)</div>
+<!-- Arrow Indicator -->
+<div class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#08080B] border border-outline-variant/50 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</div>
+</div>
+<!-- Step 2: Endpoint -->
+<div class="p-2.5 rounded bg-[#12131A] border border-secondary/40 relative">
+<div class="text-[9px] text-secondary uppercase font-semibold">Step 02 · Asset</div>
+<div class="text-white font-bold truncate mt-0.5">/api/v1/auth/profile.py</div>
+<div class="text-[10px] text-on-surface-variant truncate">Unvalidated student_id</div>
+<!-- Arrow Indicator -->
+<div class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#08080B] border border-primary-container/50 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</div>
+</div>
+<!-- Step 3: SQL Injection Vulnerability -->
+<div class="p-2.5 rounded bg-[#191A22] border-2 border-[#F20D32] shadow-[0_0_12px_rgba(242,13,50,0.3)] relative">
+<div class="text-[9px] text-[#ff8088] uppercase font-bold">Step 03 · Flaw</div>
+<div class="text-white font-bold truncate mt-0.5">SQL Injection (#FND-8902)</div>
+<div class="text-[10px] text-[#ffb3af] truncate">Raw string interpolation</div>
+<!-- Arrow Indicator -->
+<div class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#08080B] border border-amber-500/50 flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</div>
+</div>
+<!-- Step 4: PostgreSQL Auth DB -->
+<div class="p-2.5 rounded bg-[#12131A] border border-amber-500/40 relative">
+<div class="text-[9px] text-amber-300 uppercase font-semibold">Step 04 · Target</div>
+<div class="text-white font-bold truncate mt-0.5">PostgreSQL Auth DB</div>
+<div class="text-[10px] text-on-surface-variant truncate">Tier-1 Core Database</div>
+<!-- Arrow Indicator -->
+<div class="absolute -right-2.5 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-full bg-[#08080B] border border-yellow-500/50 flex items-center justify-center text-yellow-400">
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</div>
+</div>
+<!-- Step 5: FERPA Student Records -->
+<div class="p-2.5 rounded bg-[#191A22] border border-yellow-500/60 shadow-[0_0_10px_rgba(234,179,8,0.2)]">
+<div class="text-[9px] text-yellow-300 uppercase font-bold">Step 05 · Impact</div>
+<div class="text-white font-bold truncate mt-0.5">FERPA Student Records</div>
+<div class="text-[10px] text-yellow-200/80 truncate">Direct PII Exfiltration</div>
+</div>
+</div>
+<!-- Contextual Risk Explanation Callout -->
+<div class="p-3 rounded bg-[#08080B] border border-outline-variant/30 flex items-start gap-3">
+<div class="p-1 rounded bg-primary-container/20 text-primary-container mt-0.5">
+<span class="material-symbols-outlined text-base">info</span>
+</div>
+<div class="flex-1 text-xs">
+<span class="font-bold text-white uppercase font-headline-sm tracking-wide">Why This Relationship Matters:</span>
+<span class="text-on-surface-variant ml-1 font-body-sm leading-relaxed">
+            Static CVSS calculates this base flaw at <span class="font-mono text-white font-semibold">6.4 MEDIUM</span>, but knowledge graph reachability proves an uninterrupted external route directly to the unauthenticated Tier-1 PII database without WAF or sanitization barriers, elevating its contextual risk score to <span class="font-mono text-[#ff8088] font-bold">8.6 CRITICAL</span>. Remediating via AST parameterized binding in candidate <span class="font-mono text-amber-300">#P-8902</span> completely severs this 5-hop exploit graph.
+          </span>
+</div>
+</div>
+</section>
+</div>
+</body></html>
