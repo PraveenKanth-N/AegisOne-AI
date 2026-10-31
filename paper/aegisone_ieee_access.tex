@@ -11,6 +11,8 @@
 \usepackage{url}
 \usepackage{microtype}
 \usepackage{balance}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -20,6 +22,15 @@
     urlcolor=cyan,
     citecolor=blue
 }
+
+% Suppress all running header text (removes 'IEEE Access' and 'Kanth et al.')
+\pagestyle{plain}
+\makeatletter
+\def\@oddhead{}
+\def\@evenhead{}
+\def\@oddfoot{\normalfont\footnotesize\hfil\thepage\hfil}
+\def\@evenfoot{\normalfont\footnotesize\hfil\thepage\hfil}
+\makeatother
 
 \begin{document}
 
@@ -33,10 +44,8 @@
 \thanks{Dr. Vijayashree J is an Associate Professor Grade 2 with the Department of Database Systems, School of Computer Science and Engineering, Vellore Institute of Technology (VIT), Vellore, Tamil Nadu 632014, India (e-mail: vijayashree.j@vit.ac.in, corresponding author).}%
 }
 
-\markboth{IEEE Access,~Vol.~14, November~2026}%
-{Kanth \MakeLowercase{\textit{et al.}}: AegisOne AI: Closed-Loop AI Copilot for Secure Web Development}
-
 \maketitle
+\thispagestyle{plain}
 
 \begin{abstract}
 Modern web development pipelines are subject to high levels of cognitive friction because we face two antagonistic real-world operational limitations. To begin with, static application security testing (SAST) tools have reported false positive rates of over 70\%. Furthermore, contemporary generative large language models (LLMs) hallucinate syntactically plausible patches that are nonetheless semantically flawed, violate software contracts, and introduce secondary vulnerabilities. To eliminate these systemic vulnerabilities, this paper introduces \textbf{AegisOne AI}, an end-to-end, closed-loop DevSecOps defense copilot. AegisOne AI bridges static analysis and autonomous repair through four coordinated pillars: (i) an authorized Pre-Flight Scope Guard enforcing deterministic perimeter boundaries; (ii) a hybrid detection engine coupling AST-based static taint propagation with dynamic fuzzing telemetry; (iii) a heterogeneous Security Knowledge Graph ($G=(V,E,W)$) linking source code AST sinks, HTTP routes, and database entities to compute an explainable 6-factor composite risk priority; and (iv) a containerized, 4-stage disposable Docker sandbox enforcing contract-preserving validation with automated state rollback upon regression. Furthermore, all security operations, patch syntheses, and validation decisions are cryptographically chained in a tamper-evident SHA-256 Merkle audit trail signed via Ed25519 digital keys. Rigorous empirical evaluation across a benchmark suite of 120 synthetic and enterprise web vulnerability scenarios demonstrates that AegisOne AI achieves 94.6\% precision, 92.8\% recall (F1-score 93.7\%), 91.5\% semantic patch validity, and a 98.4\% regression-free automated deployment rate, vastly outperforming ungrounded LLM repair and isolated static scanners.
@@ -78,7 +87,49 @@ Any probe where $\Phi_{\text{scope}} = 0$ is rejected at the ingress gateway wit
 
 \begin{figure*}[!t]
 \centering
-\includegraphics[width=0.96\textwidth]{architecture.png}
+\IfFileExists{architecture.png}{%
+    \includegraphics[width=0.96\textwidth]{architecture.png}%
+}{%
+    % Native Vector TikZ Architecture Fallback (Renders 100% reliably in Overleaf without external files)
+    \begin{tikzpicture}[
+        scale=0.92, every node/.style={transform shape},
+        mblock/.style={rectangle, rounded corners=4pt, line width=1.1pt, minimum width=4.8cm, minimum height=1.35cm, align=center, text width=4.6cm},
+        arr/.style={-{Stealth[length=5pt]}, line width=1.1pt, color=darkgray},
+        lbl/.style={font=\scriptsize\bfseries, color=black!75, fill=white, inner sep=1.5pt}
+    ]
+        % Row 1
+        \node[mblock, draw=blue!80!black, fill=blue!8] (m1) at (0, 3.8) {\textbf{\footnotesize Module 1: Scope Guard}\\{\scriptsize RFC-1918 CIDR Enforcement}\\{\tiny HMAC-SHA256 Token \& Rate Limiter}};
+        \node[mblock, draw=purple!80!black, fill=purple!8] (m2) at (5.8, 3.8) {\textbf{\footnotesize Module 2: AST Taint Engine}\\{\scriptsize Semgrep Rules \& Dataflow Paths}\\{\tiny Invariant Sink-Source Mapping}};
+        \node[mblock, draw=green!60!black, fill=green!8] (m3) at (11.6, 3.8) {\textbf{\footnotesize Module 3: Dynamic Fuzzing}\\{\scriptsize OWASP ZAP Probes \& Canaries}\\{\tiny Ephemeral Target Validation}};
+
+        % Row 2
+        \node[mblock, draw=orange!80!black, fill=yellow!12] (m4) at (0, 1.9) {\textbf{\footnotesize Module 4: Security KG}\\{\scriptsize Heterogeneous Graph $G=(V,E,W)$}\\{\tiny Neo4j \& NetworkX (890 Nodes, 1,420 Edges)}};
+        \node[mblock, draw=red!80!black, fill=red!8] (m5) at (5.8, 1.9) {\textbf{\footnotesize Module 5: Contextual Risk Engine}\\{\scriptsize 6-Factor Composite Priority Score}\\{\tiny PageRank Attack-Path Centrality}};
+        \node[mblock, draw=teal!80!black, fill=teal!8] (m6) at (11.6, 1.9) {\textbf{\footnotesize Module 6: Explainable AI Reasoner}\\{\scriptsize Refusal Guards \& Grounded Slices}\\{\tiny Deterministic Structured JSON Output}};
+
+        % Row 3
+        \node[mblock, draw=blue!70!black, fill=blue!6] (m7) at (0, 0) {\textbf{\footnotesize Module 7: Patch Synthesizer}\\{\scriptsize AST Syntax Invariant Checking}\\{\tiny Syntax-Preserving Semantic Diff}};
+        \node[mblock, draw=violet!80!black, fill=violet!8] (m8) at (5.8, 0) {\textbf{\footnotesize Module 8: Docker Sandbox}\\{\scriptsize Stages: Clean $\to$ Patch $\to$ Verify $\to$ Rollback}\\{\tiny cgroups v2 \& Isolated Namespaces}};
+        \node[mblock, draw=orange!90!black, fill=orange!8] (m9) at (11.6, 0) {\textbf{\footnotesize Module 9: Merkle Audit Ledger}\\{\scriptsize SHA-256 Chaining \& Ed25519 Signatures}\\{\tiny Tamper-Evident Immutable Trail}};
+
+        % Horizontal Connections
+        \draw[arr] (m1) -- node[lbl] {Sanitized Scope} (m2);
+        \draw[arr] (m2) -- node[lbl] {Taint Candidates} (m3);
+        \draw[arr] (m4) -- node[lbl] {Graph Matrix} (m5);
+        \draw[arr] (m5) -- node[lbl] {Priority Score} (m6);
+        \draw[arr] (m7) -- node[lbl] {Patch Diff} (m8);
+        \draw[arr] (m8) -- node[lbl] {Verdict} (m9);
+
+        % Vertical Flow
+        \draw[arr] (m1) -- (m4);
+        \draw[arr] (m2) -- (m5);
+        \draw[arr] (m3) -- (m6);
+        \draw[arr] (m6) -- (m9);
+
+        % Feedback loop
+        \draw[arr, dashed] (m9.south) to[out=-165,in=-15] node[lbl, below] {Cryptographic Merkle Audit Trail \& Rollback Signal} (m7.south);
+    \end{tikzpicture}
+}
 \caption{The end-to-end multi-module architecture of AegisOne AI. The system integrates pre-flight scope enforcement, hybrid AST taint and dynamic fuzzing, heterogeneous Security Knowledge Graph propagation, explainable AI reasoning, AST-grounded patch synthesis, 4-stage container sandbox isolation with automated rollback, and a cryptographic SHA-256 Merkle audit trail.}
 \label{fig:architecture}
 \end{figure*}
@@ -223,7 +274,63 @@ As formalized in Algorithm \ref{alg:sandbox}, the sandbox executes four sequenti
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=\columnwidth]{evaluation_metrics.png}
+\IfFileExists{evaluation_metrics.png}{%
+    \includegraphics[width=\columnwidth]{evaluation_metrics.png}%
+}{%
+    % Native Vector TikZ Benchmark Fallback (Renders 100% reliably in Overleaf without external files)
+    \begin{tikzpicture}[
+        scale=0.76, every node/.style={transform shape},
+        font=\sffamily\scriptsize
+    ]
+        % Axes
+        \draw[->, thick, color=black!70] (0,0) -- (6.5,0) node[right, font=\tiny\bfseries] {Methodology};
+        \draw[->, thick, color=black!70] (0,0) -- (0,4.5) node[above, font=\tiny\bfseries] {Score (\%)};
+
+        % Horizontal gridlines
+        \foreach \y/\lbl in {1/25, 2/50, 3/75, 4/100} {
+            \draw[dotted, color=black!25] (0,\y) -- (6.2,\y);
+            \node[left, font=\tiny, color=black!60] at (0,\y) {\lbl};
+        }
+
+        % Groups: 1=Static, 2=Dynamic, 3=ZeroShot, 4=AegisOne
+        % Bar width = 0.22
+        % Static
+        \fill[blue!70!black] (0.5,0) rectangle (0.72, 3.28); % 82.1%
+        \fill[teal!70!black] (0.75,0) rectangle (0.97, 2.97); % 74.2%
+        \fill[purple!70!black] (1.0,0) rectangle (1.22, 3.12); % 77.9%
+        \node[below, font=\tiny\bfseries, align=center] at (0.86, -0.15) {Static\\(Semgrep)};
+
+        % Dynamic
+        \fill[blue!70!black] (1.8,0) rectangle (2.02, 2.34); % 58.4%
+        \fill[teal!70!black] (2.05,0) rectangle (2.27, 3.26); % 81.5%
+        \fill[purple!70!black] (2.3,0) rectangle (2.52, 2.72); % 68.0%
+        \node[below, font=\tiny\bfseries, align=center] at (2.16, -0.15) {Dynamic\\(ZAP)};
+
+        % Zero-Shot
+        \fill[blue!70!black] (3.1,0) rectangle (3.32, 2.77); % 69.3%
+        \fill[teal!70!black] (3.35,0) rectangle (3.57, 2.51); % 62.8%
+        \fill[purple!70!black] (3.6,0) rectangle (3.82, 2.64); % 65.9%
+        \fill[orange!85!black] (3.85,0) rectangle (4.07, 1.93); % 48.2%
+        \node[below, font=\tiny\bfseries, align=center] at (3.58, -0.15) {Zero-Shot\\(GPT-4o)};
+
+        % AegisOne (Ours)
+        \fill[blue!70!black] (4.5,0) rectangle (4.72, 3.71); % 92.8%
+        \fill[teal!70!black] (4.75,0) rectangle (4.97, 3.78); % 94.6%
+        \fill[purple!70!black] (5.0,0) rectangle (5.22, 3.75); % 93.7%
+        \fill[orange!85!black] (5.25,0) rectangle (5.47, 3.66); % 91.5%
+        \fill[green!60!black] (5.5,0) rectangle (5.72, 3.94); % 98.4%
+        \node[below, font=\tiny\bfseries, align=center] at (5.11, -0.15) {\textbf{AegisOne}\\\textbf{(Ours)}};
+
+        % Legend
+        \node[draw, fill=white, rounded corners=2pt, font=\fontsize{4}{5}\selectfont, anchor=north west] at (0.2, 4.35) {
+            \begin{tabular}{@{}ll@{}}
+                \textcolor{blue!70!black}{$\blacksquare$} Recall & \textcolor{teal!70!black}{$\blacksquare$} Precision \\
+                \textcolor{purple!70!black}{$\blacksquare$} F1-Score & \textcolor{orange!85!black}{$\blacksquare$} Validity \\
+                \multicolumn{2}{@{}l}{\textcolor{green!60!black}{$\blacksquare$} Zero-Regression}
+            \end{tabular}
+        };
+    \end{tikzpicture}
+}
 \caption{Empirical benchmark comparison across 120 web application security scenarios. AegisOne AI achieves superior precision (94.6\%), recall (92.8\%), F1-score (93.7\%), patch validity (91.5\%), and zero-regression deployment rate (98.4\%) compared to static-only, dynamic-only, and zero-shot LLM approaches.}
 \label{fig:evaluation}
 \end{figure}
