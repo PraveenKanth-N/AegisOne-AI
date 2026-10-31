@@ -6,11 +6,8 @@ with open('D:/AegisOne-AI/paper/superhumanizer_verified_all.json', 'r', encoding
     sh = json.load(f)
 
 def clean_sh(text):
-    # Escape unescaped %
     text = re.sub(r'(?<!\\)%', r'\%', text)
-    # Fix double quotes to LaTeX style ``...''
     text = re.sub(r'"([^"]*)"', r"``\1''", text)
-    # Fix brand name and DevSecOps
     text = text.replace("Aegis One AI", "AegisOne AI")
     text = text.replace("Dev Sec Ops", "DevSecOps")
     return text.strip()
@@ -65,12 +62,13 @@ tex_content = r"""\documentclass[journal,twoside]{IEEEtran}
 \let\ps@IEEEtitlepagestyle\ps@empty
 \makeatother
 
-% Compact bibliography item spacing to prevent orphan reference spillover
+% Compact bibliography item spacing and prevent splitting reference entries across columns
 \let\oldthebibliography\thebibliography
 \renewcommand{\thebibliography}[1]{%
   \oldthebibliography{#1}%
-  \setlength{\itemsep}{0.8pt plus 0.3pt}%
+  \setlength{\itemsep}{0.9pt plus 0.3pt}%
   \setlength{\parskip}{0pt}%
+  \interlinepenalty=10000%
 }
 
 \begin{document}
@@ -164,7 +162,7 @@ Any probe where $\Phi_{\text{scope}} = 0$ is rejected at the ingress gateway wit
 \end{figure*}
 
 \section{Hybrid Vulnerability Detection}
-""" + sec_hybrid + r"""
+Most ``analyzers'' work in isolation, leading to high false positives and some code paths being ignored. AegisOne AI combines both static and dynamic approaches into a single dual-engine pipeline. AegisOne AI extracts target route handler parameters, URL args, and data types from the AST traversal of the Semgrep target, turning the static AST based discovery into dynamic fuzzing hypothesis, and then the dynamic fuzzing harness uses an embedded OWASP ZAP API controller to verify the hypothesis generated from the AST. Further to differentiate true code execution reflection from function title, the AegisOne AI injects cryptographic canary strings. Where the execution shows the canary in the response body without sanitization, or response latency exceeds 3.0s under time-delay injection, then the dynamic harness is likely to produce exploitability.
 
 \subsection{AST-Based Static Taint Propagation}
 Let an application AST be represented as an ordered directed graph $\mathcal{T}_{\text{AST}} = (N, E_{\text{tree}})$. We define a set of untrusted input sources $\mathcal{S}_{\text{in}} \subset N$ (e.g., \texttt{request.args}, \texttt{request.json}, HTTP headers) and security-critical execution sinks $\mathcal{S}_{\text{out}} \subset N$ (e.g., \texttt{cursor.execute}, \texttt{eval}, \texttt{os.system}, \texttt{subprocess.Popen}).
@@ -184,29 +182,38 @@ The dynamic fuzzing harness leverages an embedded OWASP ZAP API controller to va
 
 For SQL injection validation, the probe synthesizes boolean and time-delay vector mutations:
 \begin{equation}
-q_{\text{probe}} = q_{\text{orig}} \cup \{'\text{ OR (SELECT 1 FROM (SELECT SLEEP(3))x)-- }, \zeta_{\text{canary}}\}.
+\begin{aligned}
+q_{\text{probe}} = \; & q_{\text{orig}} \cup \{'\text{ OR (SELECT 1 FROM } \\
+& \text{(SELECT SLEEP(3))x)-- }, \zeta_{\text{canary}}\}.
+\end{aligned}
 \end{equation}
 Upon execution, if the HTTP response body exhibits $\zeta_{\text{canary}}$ without sanitization or if the response latency $\Delta t \ge 3.0\,\text{s}$ under time-delay injection, the dynamic harness confirms exploitability:
 \begin{equation}
 \text{Conf}_{\text{DAST}} = 
 \begin{cases}
 1.0, & \text{if } \zeta_{\text{canary}} \in \text{Body}_{\text{resp}} \vee \Delta t \ge 3.0\,\text{s}, \\
-0.5, & \text{if } \text{Status}_{\text{resp}} = 500 \text{ (Unhandled Error)}, \\
-0.0, & \text{if } \text{Status}_{\text{resp}} \in \{400, 404, 422\} \text{ (Filtered)}.
+0.5, & \text{if } \text{Status}_{\text{resp}} = 500 \text{ (Error)}, \\
+0.0, & \text{if } \text{Status}_{\text{resp}} \in \{400, 404, 422\}.
 \end{cases}
 \end{equation}
 
 \section{Security Knowledge Graph and Contextual Risk Prioritization}
-""" + sec_kg + r"""
+Isolated vulnerability scanners treat each vulnerability as a point detection ignoring the topology of the system where the component resides. A SQL injection on a public metrics analytics route handled by a remote admin analytics route would have very different enterprise risk of a payload embedded in a payment processing microservice that stores personally identifiable information in plaintext. AegisOne AI ingests a cross-domain heterogeneous directed Security Knowledge Graph, modeled using Neo4j and NetworkX. It models code sinks, code routes, and database schemas and PII sensitivity, with 890 nodes and 1,420 edges, employing personalized Page Rank centrality and shortest-path taint flow to derive an interpretable six-factor composite vulnerability score.
 
 \subsection{Graph Representation Formulation}
 AegisOne AI populates a heterogeneous directed Security Knowledge Graph $G = (V, E, W)$ modeled within Neo4j and NetworkX. The vertex set $V$ decomposes into distinct semantic partitions:
 \begin{equation}
-V = V_{\text{route}} \cup V_{\text{file}} \cup V_{\text{func}} \cup V_{\text{sink}} \cup V_{\text{db}} \cup V_{\text{cve}} \cup V_{\text{pii}}.
+\begin{aligned}
+V = \; & V_{\text{route}} \cup V_{\text{file}} \cup V_{\text{func}} \cup V_{\text{sink}} \\
+       & \cup \; V_{\text{db}} \cup V_{\text{cve}} \cup V_{\text{pii}}.
+\end{aligned}
 \end{equation}
 The edge set $E$ models syntactic, architectural, and data dependencies:
 \begin{equation}
-E \subset \{\text{CALLS}, \text{IMPORTS}, \text{EXPOSES}, \text{READS\_FROM}, \text{WRITES\_TO}, \text{AFFECTS}\}.
+\begin{aligned}
+E \subset \{ & \text{CALLS}, \text{IMPORTS}, \text{EXPOSES}, \\
+             & \text{READS\_FROM}, \text{WRITES\_TO}, \text{AFFECTS} \}.
+\end{aligned}
 \end{equation}
 Each edge $e = (u, v)$ is assigned an edge weight $w(u, v) \in (0, 1]$ inversely proportional to the accessibility resistance between nodes.
 
@@ -224,7 +231,7 @@ S_{\text{comp}} = \sum_{i=1}^6 w_i \cdot f_i(v),
 where $f_1 = \text{CVSS}_{\text{base}} / 10$, $f_2 = \mathbf{c}(v)$ (PageRank centrality), $f_3 = \text{Conf}_{\text{DAST}}$ (dynamic exploitability confirmation), $f_4 = \mathbb{I}(v \rightsquigarrow V_{\text{pii}})$ (PII data reachability), $f_5 = \text{Reach}_{\text{internet}}(v)$ (external exposure indicator), and $f_6 = \text{Complexity}_{\text{exploit}}^{-1}$, subject to $\sum_{i=1}^6 w_i = 1.0$. Findings with $S_{\text{comp}} \ge 0.65$ are routed for automated remediation.
 
 \section{Grounded Patch Synthesis and Refusal Guardrails}
-""" + sec_patch + r"""
+Forgo on unrestricted prompts or general-purpose language models. Instead, AegisOne AI infuses its untrusted generative repair via a constrained, grammar-guided program patching module built on the foundation of its AST. Once an AST sink node that maintains a verified vulnerability is identified, our patch synthesizer harnesses a more localized backward program slice containing only the relevant dataflow dependencies. As per the research works, the output of unconstrained language models might have highly unstable refactoring behaviors that are crafted by removing necessary business logic, removing authorization checks, or replacing native classes with rough comments. In addition, AegisOne AI employs deterministic programmatic Refusal Guards to verify the patch diffs prior to running. If any refusal rule is invoked, the output patch is instantly rejected, and the prompt engine will be more likely to re-synthesize with a transparent violation penalty.
 
 \subsection{Grammar-Constrained Program Slicing}
 Rather than supplying unrestricted prompts to a general-purpose language model, AegisOne AI grounds generative repair through an AST-guided program slicing module. Once an AST sink node $n_{\text{sink}}$ containing a verified vulnerability is isolated, our patch synthesizer computes a localized backward program slice $\mathcal{S}_{\text{back}}(n_{\text{sink}})$ containing strictly the dataflow dependencies, variable declarations, and function signatures governing the tainted input path.
@@ -274,7 +281,7 @@ Unconstrained LLMs frequently exhibit reckless refactoring behaviors: stripping 
 \end{algorithm}
 
 \section{Disposable Sandbox Execution and Auto-Rollback}
-""" + sec_sandbox + r"""
+To prevent an automated security patch from disrupting production workloads, AegisOne AI deploys an isolated validation pipeline, built around disposable Docker containers. Each patch candidate is tested in a temporary container, spawned from the target application's pristine base image. The container environment is defined by mandatory cgroups v2 resource quotas, capability dropping, and ephemeral bridge networking isolated from the host. The sandbox runs through four phases: Stage 1 (Clean Baseline Verification); Stage 2 (Patch Application and AST Integrity); Stage 3 (Dynamic Vulnerability Elimination), and Stage 4 (Functional Regression Testing). If the patch fails at any phase, the automated rollback mechanism will likely return the workspace to the pristine base image, log telemetry on the failure, and inform the developer console of the regression.
 
 \subsection{Four-Stage Containerized Verification Lifecycle}
 The disposable Docker sandbox enforces four sequential execution gates:
@@ -290,7 +297,7 @@ The disposable Docker sandbox enforces four sequential execution gates:
 If any stage fails, the sandbox immediately destroys the container and restores the clean baseline git snapshot.
 
 \section{Cryptographic Tamper-Evident Merkle Audit Trail}
-""" + sec_merkle + r"""
+In a regulated enterprise context, the outcome of any automated change must be mathematically non-repudiable. AegisOne AI utilizes an append-only cryptography log chain with SHA-256. To provide author non-repudiation to the distributed CI/CD runners, the block header is signed with an Ed25519 private key. Any backdating of the previous log record is thought to cause the mathematical invariant to break, which would alarm security auditors.
 
 Each security event $E_i$ (scope authorization, vulnerability identification, patch generation, sandbox validation result) is recorded as a structured leaf node $L_i = H(\text{Timestamp} \parallel \text{FindingID} \parallel \text{PatchDiff} \parallel \text{Verdict})$. Adjacent leaves are recursively paired and hashed using SHA-256 to produce an immutable root hash $R_k$:
 \begin{equation}
@@ -338,7 +345,7 @@ w/o Container Sandbox & 94.6 & 92.8 & 93.7 & 61.2 \\
 \end{table*}
 
 \section{Experimental Evaluation and Ablation Study}
-""" + sec_results + r"""
+The empirical evaluation on the suite of benchmark, 120 enterprise and synthetic web vulnerability scenarios suggests, AegisOne AI will have a 94.6\% precision, 92.8\% recall, 93.7\% F1 score, 91.5\% semantic patch validity and 98.4\% zero regression automated deployment rate. The static-only scanner has higher false-positive rate, while the dynamic-only scanner demonstrates high precision but misses the unexercised route. By cross-validation of AST taint hypothesis with dynamic canary fuzzing, AegisOne AI can demonstrate a 15.8\% F1 score improvement over static-only scanning; it is likely that disabling dynamic canary fuzzing engine will lower the precision to 78.4\% and removing Security Knowledge Graph may lower the recall to 84.5\%; lastly, removing the container sandbox verification will likely lower the zero regression deployment rate to 61.2\% and demonstrates the need for isolated runtime testing and automated rollback to prevent broken code from being introduced into production.
 
 \begin{figure}[!b]
 \centering
@@ -437,4 +444,4 @@ Such container lifecycle overhead introduces an average turnaround latency of 34
 with open('D:/AegisOne-AI/paper/aegisone_ieee_access.tex', 'w', encoding='utf-8') as f:
     f.write(tex_content)
 
-print("Generated aegisone_ieee_access.tex successfully with verified SuperHumanizer content!")
+print("Generated aegisone_ieee_access.tex with fixed equation widths and un-split bibliography items!")

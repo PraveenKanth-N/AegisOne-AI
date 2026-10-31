@@ -37,12 +37,13 @@
 \let\ps@IEEEtitlepagestyle\ps@empty
 \makeatother
 
-% Compact bibliography item spacing to prevent orphan reference spillover
+% Compact bibliography item spacing and prevent splitting reference entries across columns
 \let\oldthebibliography\thebibliography
 \renewcommand{\thebibliography}[1]{%
   \oldthebibliography{#1}%
-  \setlength{\itemsep}{0.8pt plus 0.3pt}%
+  \setlength{\itemsep}{0.9pt plus 0.3pt}%
   \setlength{\parskip}{0pt}%
+  \interlinepenalty=10000%
 }
 
 \begin{document}
@@ -156,15 +157,18 @@ The dynamic fuzzing harness leverages an embedded OWASP ZAP API controller to va
 
 For SQL injection validation, the probe synthesizes boolean and time-delay vector mutations:
 \begin{equation}
-q_{\text{probe}} = q_{\text{orig}} \cup \{'\text{ OR (SELECT 1 FROM (SELECT SLEEP(3))x)-- }, \zeta_{\text{canary}}\}.
+\begin{aligned}
+q_{\text{probe}} = \; & q_{\text{orig}} \cup \{'\text{ OR (SELECT 1 FROM } \\
+& \text{(SELECT SLEEP(3))x)-- }, \zeta_{\text{canary}}\}.
+\end{aligned}
 \end{equation}
 Upon execution, if the HTTP response body exhibits $\zeta_{\text{canary}}$ without sanitization or if the response latency $\Delta t \ge 3.0\,\text{s}$ under time-delay injection, the dynamic harness confirms exploitability:
 \begin{equation}
 \text{Conf}_{\text{DAST}} = 
 \begin{cases}
 1.0, & \text{if } \zeta_{\text{canary}} \in \text{Body}_{\text{resp}} \vee \Delta t \ge 3.0\,\text{s}, \\
-0.5, & \text{if } \text{Status}_{\text{resp}} = 500 \text{ (Unhandled Error)}, \\
-0.0, & \text{if } \text{Status}_{\text{resp}} \in \{400, 404, 422\} \text{ (Filtered)}.
+0.5, & \text{if } \text{Status}_{\text{resp}} = 500 \text{ (Error)}, \\
+0.0, & \text{if } \text{Status}_{\text{resp}} \in \{400, 404, 422\}.
 \end{cases}
 \end{equation}
 
@@ -174,11 +178,17 @@ Isolated vulnerability scanners treat each vulnerability as a point detection ig
 \subsection{Graph Representation Formulation}
 AegisOne AI populates a heterogeneous directed Security Knowledge Graph $G = (V, E, W)$ modeled within Neo4j and NetworkX. The vertex set $V$ decomposes into distinct semantic partitions:
 \begin{equation}
-V = V_{\text{route}} \cup V_{\text{file}} \cup V_{\text{func}} \cup V_{\text{sink}} \cup V_{\text{db}} \cup V_{\text{cve}} \cup V_{\text{pii}}.
+\begin{aligned}
+V = \; & V_{\text{route}} \cup V_{\text{file}} \cup V_{\text{func}} \cup V_{\text{sink}} \\
+       & \cup \; V_{\text{db}} \cup V_{\text{cve}} \cup V_{\text{pii}}.
+\end{aligned}
 \end{equation}
 The edge set $E$ models syntactic, architectural, and data dependencies:
 \begin{equation}
-E \subset \{\text{CALLS}, \text{IMPORTS}, \text{EXPOSES}, \text{READS\_FROM}, \text{WRITES\_TO}, \text{AFFECTS}\}.
+\begin{aligned}
+E \subset \{ & \text{CALLS}, \text{IMPORTS}, \text{EXPOSES}, \\
+             & \text{READS\_FROM}, \text{WRITES\_TO}, \text{AFFECTS} \}.
+\end{aligned}
 \end{equation}
 Each edge $e = (u, v)$ is assigned an edge weight $w(u, v) \in (0, 1]$ inversely proportional to the accessibility resistance between nodes.
 
