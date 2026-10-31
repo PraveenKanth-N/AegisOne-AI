@@ -37,7 +37,7 @@
 \maketitle
 
 \begin{abstract}
-Modern web development pipelines experience severe cognitive friction arising from two competing operational failures: static application security testing (SAST) tools generate overwhelming false-positive rates exceeding 70\%, while contemporary generative large language models (LLMs) hallucinate syntactically plausible but semantically insecure or contract-breaking patches. To eliminate these systemic vulnerabilities, this paper introduces \textbf{AegisOne AI}, an end-to-end, closed-loop DevSecOps defense copilot. AegisOne AI bridges static analysis and autonomous repair through four coordinated pillars: (i) an authorized Pre-Flight Scope Guard enforcing deterministic perimeter boundaries; (ii) a hybrid detection engine coupling AST-based static taint propagation with dynamic fuzzing telemetry; (iii) a heterogeneous Security Knowledge Graph ($G=(V,E,W)$) linking source code AST sinks, HTTP routes, and database entities to compute an explainable 6-factor composite risk priority; and (iv) a containerized, 4-stage disposable Docker sandbox enforcing contract-preserving validation with automated state rollback upon regression. Furthermore, all security operations, patch syntheses, and validation decisions are cryptographically chained in a tamper-evident SHA-256 Merkle audit trail signed via Ed25519 digital keys. Rigorous empirical evaluation across a benchmark suite of 120 synthetic and enterprise web vulnerability scenarios demonstrates that AegisOne AI achieves 94.6\% precision, 92.8\% recall (F1-score 93.7\%), 91.5\% semantic patch validity, and a 98.4\% regression-free automated deployment rate, vastly outperforming ungrounded LLM repair and isolated static scanners.
+Modern web development pipelines are subject to high levels of cognitive friction because we face two antagonistic real-world operational limitations. To begin with, static application security testing (SAST) tools have reported false positive rates of over 70\%. Furthermore, contemporary generative large language models (LLMs) hallucinate syntactically plausible patches that are nonetheless semantically flawed, violate software contracts, and introduce secondary vulnerabilities. To eliminate these systemic vulnerabilities, this paper introduces \textbf{AegisOne AI}, an end-to-end, closed-loop DevSecOps defense copilot. AegisOne AI bridges static analysis and autonomous repair through four coordinated pillars: (i) an authorized Pre-Flight Scope Guard enforcing deterministic perimeter boundaries; (ii) a hybrid detection engine coupling AST-based static taint propagation with dynamic fuzzing telemetry; (iii) a heterogeneous Security Knowledge Graph ($G=(V,E,W)$) linking source code AST sinks, HTTP routes, and database entities to compute an explainable 6-factor composite risk priority; and (iv) a containerized, 4-stage disposable Docker sandbox enforcing contract-preserving validation with automated state rollback upon regression. Furthermore, all security operations, patch syntheses, and validation decisions are cryptographically chained in a tamper-evident SHA-256 Merkle audit trail signed via Ed25519 digital keys. Rigorous empirical evaluation across a benchmark suite of 120 synthetic and enterprise web vulnerability scenarios demonstrates that AegisOne AI achieves 94.6\% precision, 92.8\% recall (F1-score 93.7\%), 91.5\% semantic patch validity, and a 98.4\% regression-free automated deployment rate, vastly outperforming ungrounded LLM repair and isolated static scanners.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -45,11 +45,11 @@ Web Application Security, Automated Program Repair, Security Knowledge Graph, De
 \end{IEEEkeywords}
 
 \section{Introduction}
-\IEEEPARstart{C}{ontemporary} web application architectures increasingly rely on rapid continuous integration and continuous deployment (CI/CD) cycles. While agile practices accelerate feature release velocity, they concurrently widen the organizational attack surface. Traditional Static Application Security Testing (SAST) relies on rigid syntax-pattern heuristics, which frequently yield alert fatigue through unprioritized backlogs where up to 75\% of flagged issues represent non-exploitable noise \cite{chess2004static, beller2016analyzing}. Conversely, Dynamic Application Security Testing (DAST) can confirm exploitability at runtime but suffers from shallow code coverage, failing to pin down precise abstract syntax tree (AST) taint sinks within complex microservice boundaries \cite{doupe2010fear}.
+\IEEEPARstart{M}{odern} web application topologies are rapidly evolving and now often include fast-pipeline CI/CD workloads. Evidence points to Agile turning up speed on the feature delivery side but also increasing the organizational attack surface. Conventional Static Application Security Testing (SAST) operates primarily on rigid syntax heuristics, which produces high alert fatigue across developer backlogs, where up to 75\% of identified warnings turn out to be harmless false positives \cite{chess2004static, beller2016analyzing}. Dynamic Application Security Testing (DAST) can verify runtime exploitability but suffers from shallow code coverage, frequently failing to locate the precise abstract syntax tree (AST) taint sinks within complex microservice boundaries \cite{doupe2010fear}.
 
-Recently, the integration of generative Large Language Models (LLMs) into developer workflows has prompted interest in Automated Program Repair (APR) \cite{xia2023automated, fan2023automated}. Nevertheless, deploying unconstrained generative models to resolve security-critical vulnerabilities introduces severe second-order hazards. Foundation models lack situational grounding regarding runtime dependency topology and frequently generate code that introduces subtle regressions, strips essential authorization checks, or hallucinates fictitious software libraries \cite{pearce2025asleep, sandoval2023lost}. A security fix must be proven safe, backward-compatible, and contract-preserving before reaching production.
+The recent adoption of generative LLMs by developers is causing renewed interest in the APR problem \cite{xia2023automated, fan2023automated}. However, the use of unconstrained generative models to fix security-critical vulnerabilities presents severe second-order hazards. Foundation models lack situational grounding regarding runtime dependency topology and frequently generate code that introduces subtle regressions, strips essential authorization checks, or hallucinates fictitious software libraries \cite{pearce2025asleep, sandoval2023lost}. A security fix must be proven safe, backward-compatible, and contract-preserving before reaching production.
 
-To resolve these acute dilemmas, we present \textbf{AegisOne AI}, a closed-loop defensive DevSecOps architecture designed to transform ungrounded generative suggestions into verifiable, mathematically prioritized, and empirically tested software defenses. Unlike conventional developer assistants that merely emit diff text into a chat window, AegisOne AI coordinates static analysis, dynamic telemetry, graph-theoretic risk propagation, and containerized sandbox verification within an immutable cryptographic ledger.
+In response to these compelling vulnerabilities and threats, the research and implementation described in this paper aim to leverage \textbf{AegisOne AI}, an autonomous closed-loop defensive DevSecOps architecture designed to turn ungrounded suggestions into actionable, mathematically prioritized, and empirically tested software defenses. Unlike conventional developer assistants that merely emit diff text into a chat window, AegisOne AI coordinates static analysis, dynamic telemetry, graph-theoretic risk propagation, and containerized sandbox verification within an immutable cryptographic ledger.
 
 The primary contributions of this paper are summarized as follows:
 \begin{enumerate}
@@ -63,7 +63,7 @@ The primary contributions of this paper are summarized as follows:
 
 \section{Threat Model and Architectural Perimeter}
 \subsection{Adversary Model}
-We assume an external adversary $\mathcal{A}_{\text{ext}}$ operating across the public Internet and an authenticated malicious insider $\mathcal{A}_{\text{ins}}$ possessing low-privilege application credentials. The adversary seeks to exploit common web application flaws, including Structured Query Language Injection (SQLi, CWE-89), Cross-Site Scripting (XSS, CWE-79), Broken Object-Level Authorization (BOLA, CWE-639), and Server-Side Request Forgery (SSRF, CWE-918). Additionally, we model an untrusted generative model $\mathcal{M}_{\text{LLM}}$ whose stochastic outputs may contain hallucinations, logic errors, or backdoors.
+This analysis assumes an external attacker facing the public Internet as well as an authenticated malicious insider with application credentials that are low value and have minimal on-path value. The adversary seeks to exploit common web application flaws, including Structured Query Language Injection (SQLi, CWE-89), Cross-Site Scripting (XSS, CWE-79), Broken Object-Level Authorization (BOLA, CWE-639), and Server-Side Request Forgery (SSRF, CWE-918). Additionally, we model an untrusted generative model $\mathcal{M}_{\text{LLM}}$ whose stochastic outputs may contain hallucinations, logic errors, or backdoors.
 
 \subsection{Scope Guard Authorization Formalism}
 Prior to executing any dynamic inspection or code mutation, AegisOne AI mandates verification against an explicit authorization specification $\Sigma_{\text{scope}} = \langle \mathcal{U}_{\text{allowed}}, \mathcal{D}_{\text{target}}, \mathcal{T}_{\text{validity}}, \mathcal{K}_{\text{sign}} \rangle$. Let $r_{\text{req}}$ represent an incoming evaluation request targeting URI $u_{\text{target}}$. The Scope Guard computes:
@@ -85,7 +85,7 @@ Any probe where $\Phi_{\text{scope}} = 0$ is rejected at the ingress gateway wit
 \end{figure*}
 
 \section{Hybrid Vulnerability Detection}
-Traditional analyzers operate in isolation, producing either high false-positive rates (SAST) or blind spots in unexercised code paths (DAST). AegisOne AI unifies both methodologies into an intertwined dual-engine pipeline.
+Most traditional analyzers work in isolation, which can lead to high false-positive rates or code paths not examined at all. AegisOne AI puts these two approaches into a single integrated dual-engine pipeline.
 
 \subsection{AST-Based Static Taint Propagation}
 Let an application AST be represented as an ordered directed graph $T_{\text{AST}} = (N, E_{\text{tree}}).$ We define a set of untrusted input sources $\mathcal{S}_{\text{in}} \subset N$ (e.g., \texttt{request.args}, \texttt{request.json}, \texttt{HTTP headers}) and security-critical execution sinks $\mathcal{S}_{\text{out}} \subset N$ (e.g., \texttt{cursor.execute}, \texttt{eval}, \texttt{os.system}, \texttt{subprocess.Popen}).
@@ -95,7 +95,7 @@ A dataflow edge $e_{ij} = (n_i, n_j)$ indicates that the valuation of node $n_j$
     \text{TaintPath}(P) \iff (n_0 \in \mathcal{S}_{\text{in}}) \land (n_k \in \mathcal{S}_{\text{out}}) \land (\forall m \in [1, k-1], n_m \notin \Omega_{\text{sanitize}}).
 \end{equation}
 
-When Semgrep AST traversal identifies a candidate taint path, AegisOne AI does not merely log a static finding. Instead, it extracts the target route handler parameters, URL arguments, and data types, transforming the static AST finding into a dynamic fuzzing hypothesis.
+When Semgrep AST traversal identifies a candidate taint path, AegisOne AI extracts the target route handler parameters, URL arguments, and data types, transforming the static AST finding into an active dynamic fuzzing hypothesis.
 
 \subsection{Dynamic Application Fuzzing with Injected Canaries}
 The dynamic fuzzing harness leverages an embedded OWASP ZAP API controller to validate the AST-derived hypothesis. To differentiate genuine code execution from superficial reflection, AegisOne AI injects cryptographic canary strings $\zeta_{\text{canary}} \leftarrow \text{HMAC-SHA256}(k_{\text{session}}, \text{FindingID})$.
@@ -114,7 +114,7 @@ Upon execution, if the HTTP response body exhibits $\zeta_{\text{canary}}$ witho
 \end{equation}
 
 \section{Security Knowledge Graph and Contextual Risk Prioritization}
-Isolated vulnerability scanners evaluate each defect in a vacuum, ignoring the system topology in which the vulnerable component resides. A SQL injection in an internal administrative analytics script processing public metrics carries drastically different enterprise risk than an identical vulnerability inside a payment processing microservice storing unencrypted personally identifiable information (PII).
+Isolated vulnerability scanners treat each vulnerability as an isolated incident and ignore the system topology of the vulnerable component. It is a fair bet that a SQL injection in a remote admin analytics script processing public metrics carries drastically different enterprise risk than an identical vulnerability inside a payment processing microservice storing unencrypted personally identifiable information (PII).
 
 \subsection{Graph Representation Formulation}
 AegisOne AI populates a heterogeneous directed Security Knowledge Graph $G = (V, E, W)$ modeled within Neo4j and NetworkX. The vertex set $V$ decomposes into distinct semantic partitions:
@@ -189,7 +189,7 @@ where $\sum_{i=1}^6 w_i = 1.0$. In our production deployment, weights are calibr
 \end{algorithm}
 
 \section{AST-Grounded Patch Synthesis with Refusal Guards}
-When a vulnerability is prioritized, AegisOne AI initiates Automated Program Repair. Rather than passing raw source files into an unconstrained text model, the patch generation subsystem enforces structural and semantic boundaries.
+Starting with a high priority vulnerability, AegisOne AI will kick off Automated Program Repair. Rather than feeding raw source files into an unconstrained text model, the patch generation subsystem enforces structural and semantic boundaries.
 
 \subsection{Contextual Prompt Grounding}
 The reasoning engine extracts only the minimal code slice comprising the taint path $\langle n_{\text{source}}, \dots, n_{\text{sink}} \rangle$, the localized AST node attributes, database schema definitions, and the specific Common Weakness Enumeration (CWE) mitigation blueprint (e.g., parameterized queries for CWE-89, DOMPurify contextual escaping for CWE-79). The input prompt is structured using a formal JSON grammar that prohibits extraneous conversational prose.
@@ -208,7 +208,7 @@ Generative models frequently attempt to resolve vulnerabilities by taking harmfu
 If any refusal rule fires, the patch is discarded instantly, and a constrained re-prompting cycle is triggered with explicit AST modification constraints.
 
 \section{Closed-Loop Docker Sandbox Validation and Automated Rollback}
-To ensure that generated patches do not compromise software stability, AegisOne AI mandates verification inside an isolated runtime container prior to merging.
+In order to ensure that generated patches do not endanger software stability, AegisOne AI validates each repair within an isolated sandbox runtime container before changes can be committed.
 
 \subsection{Ephemeral Container Sandbox Isolation}
 Validation is conducted within disposable Docker containers instantiated from pinned base images. Container execution is locked down through Linux security controls:
@@ -237,7 +237,7 @@ If any stage fails, the automated rollback protocol resets the workspace to $\ma
 \end{figure}
 
 \section{Cryptographic Merkle Audit Trail and Non-Repudiation}
-In regulated enterprise environments (e.g., SOC 2 Type II, ISO/IEC 27001), automated modifications must provide mathematical non-repudiation. AegisOne AI maintains an append-only cryptographic ledger structured as a SHA-256 Merkle chain.
+In regulated enterprise settings, all automated modifications must exhibit mathematical non-repudiation. AegisOne AI implements an append-only cryptographic log chain grounded in SHA-256.
 
 Each audit event block $\mathcal{B}_k$ records:
 \begin{equation}
@@ -302,7 +302,7 @@ Zero-Shot LLM APR (GPT-4o) & 62.8 & 69.3 & 65.9 & 48.2 & 52.1 & 18.4 \\
 The quantitative results are summarized in Table \ref{tab:evaluation} and illustrated in Fig. \ref{fig:evaluation}.
 
 \subsubsection{Detection Accuracy and Noise Suppression}
-Standalone static scanning achieved an 82.1\% recall but suffered from an elevated false-positive rate (precision: 74.2\%), frequently flagging safe queries containing constant string concatenations. Conversely, standalone dynamic scanning exhibited high precision (81.5\%) but missed unexercised routes and backend message consumers, resulting in a low recall of 58.4\%. By cross-validating AST taint hypotheses with dynamic canary fuzzing, AegisOne AI achieved \textbf{94.6\% precision} and \textbf{92.8\% recall}, yielding an aggregate F1-score of \textbf{93.7\%} (a +15.8 percentage point improvement over pure static scanning).
+For independent static scanning, the recall is 82.1\%, but it is plagued by an elevated false-positive rate (precision: 74.2\%), frequently flagging safe queries containing constant string concatenations. Conversely, standalone dynamic scanning exhibited high precision (81.5\%) but missed unexercised routes and backend message consumers, resulting in a low recall of 58.4\%. By cross-validating AST taint hypotheses with dynamic canary fuzzing, AegisOne AI achieved \textbf{94.6\% precision} and \textbf{92.8\% recall}, yielding an aggregate F1-score of \textbf{93.7\%} (a +15.8 percentage point improvement over pure static scanning).
 
 \subsubsection{Patch Semantic Validity and Regression Resistance}
 When tasked with code repair, the unconstrained Zero-Shot LLM baseline produced syntactically valid patches in only 48.2\% of cases. Crucially, in nearly half of the accepted modifications (zero-regression rate: 52.1\%), the ungrounded model introduced functional regressions, including breaking API contract schemas or removing necessary parameter transformations.
